@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Animal Bite Dashboard</h1>
+<h1>Family Planning Dashboard</h1>
 <p>Welcome, {{ user.username }}! You are authorized for this module.</p>
 <form action="{% url 'logout' %}" method="post">
   {% csrf_token %}

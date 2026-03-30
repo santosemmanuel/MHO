@@ -22,7 +22,7 @@ from .views import dispatch_user
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('dispatch/', dispatch_user, name='dispatch'),
+    path('MHOApp/', dispatch_user, name='dispatch'),
     path('animal_bite/', include(('animal_bite.urls', 'animal_bite'), namespace='animal_bite')),
     path('family_planning/', include(('family_planning.urls', 'family_planning'), namespace='family_planning')),
 ]
