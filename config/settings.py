@@ -117,7 +117,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# The URL to use when referring to static files (e.g., /static/css/style.css)
 STATIC_URL = 'static/'
+
+# Additional locations for static files
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Refers to a 'static' folder in your project root
+]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
