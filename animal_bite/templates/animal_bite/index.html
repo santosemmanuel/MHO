@@ -68,12 +68,37 @@
                 <option>Female</option>
               </select>
             </div>
+
+            <div class="col-md-4 offset-md-1">
+              <label class="form-label">
+              Is the patient the member?
+              </label>
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  name="patientIsMember"
+                  value="yes"
+                  checked
+                />
+                Self
+              </label>
+
+              <label class="ms-3">
+                <input type="radio" name="patientIsMember" value="no" />
+                Dependent
+              </label>
+            </div>
+          </div>
+
+         
           </div>
 
           <h5 class="mt-4">Address Details</h5>
 
           <div class="row g-2">
             <div class="col-md-4">
+              <label class="form-label">Street</label>
               <input
                 class="form-control form-control-sm rounded-0"
                 name="street"
@@ -82,6 +107,7 @@
             </div>
 
             <div class="col-md-4">
+              <label class="form-label">Municipality</label>
               <select
                 class="form-select form-select-sm rounded-0 form-select form-select-sm rounded-0-sm"
                 id="municipality"
@@ -93,6 +119,7 @@
             </div>
 
             <div class="col-md-4">
+              <label class="form-label">Barangay</label>
               <select
                 class="form-select form-select-sm rounded-0 form-select form-select-sm rounded-0-sm"
                 name="barangay"
@@ -108,6 +135,9 @@
 
           <div class="row g-2">
             <div class="col-md-6">
+               <label class="form-label">
+                Contact Number
+              </label>
               <input
                 class="form-control form-control-sm rounded-0"
                 name="mobile"
@@ -116,6 +146,9 @@
             </div>
 
             <div class="col-md-6">
+               <label class="form-label">
+                Email Address
+              </label>
               <input
                 class="form-control form-control-sm rounded-0"
                 name="email"
@@ -127,32 +160,10 @@
 
         <!-- Part II -->
         <div class="col-12 mt-4">
-          <div class="section-header">
-            Part II — Patient Information
-          </div>
 
-          <label class="form-label fw-bold">
-            Is the patient the member?
-          </label>
+          
 
-          <div>
-            <label>
-              <input
-                type="radio"
-                name="patientIsMember"
-                value="yes"
-                checked
-              />
-              Self
-            </label>
-
-            <label class="ms-3">
-              <input type="radio" name="patientIsMember" value="no" />
-              Dependent
-            </label>
-          </div>
-
-          <div id="dependentSection" class="row g-2 d-none mt-3">
+          <div id="dependentSection" class="row g-2">
             <div class="col-12">
               <h5>Dependent Info</h5>
             </div>
@@ -222,73 +233,38 @@
 
         <!-- Part III -->
         <div class="col-12 mt-4">
-          <div class="section-header">
-            Part III — Certification & Disposition
-          </div>
-
+  <label class="form-label fw-bold">Form Signee</label>
           <div class="row">
-            <div class="col-md-6">
-              <label class="form-label fw-bold">Form Signee</label>
-
-              <div class="form-check">
+              
+            <div class="col-md-4">
                 <input
                   type="radio"
                   id="radioMember"
                   name="signee"
-                  class="form-check-input"
+      
                   value="member"
                   checked
                 />
                 <label class="form-check-label" for="radioMember">
                   Member
                 </label>
-              </div>
+   
 
-              <div class="form-check">
                 <input
                   type="radio"
                   id="radioRep"
                   name="signee"
-                  class="form-check-input"
+
                   value="representative"
                 />
                 <label class="form-check-label" for="radioRep">
                   Representative
                 </label>
-              </div>
             </div>
-
-            <div class="col-md-6">
-              <label class="form-label fw-bold">
-                CF2 — Patient Disposition
-              </label>
-
-              <select
-                class="form-select form-select-sm rounded-0"
-                name="patientDisposition"
-                required
-              >
-                <option value="">Select Disposition</option>
-                <option value="Improved">Improved</option>
-                <option value="Recovered">Recovered</option>
-                <option value="HomeDischarged">
-                  Home / Discharged AMA
-                </option>
-                <option value="Absconded">Absconded</option>
-                <option value="Expired">Expired</option>
-                <option value="Transferred">
-                  Transferred / Referred
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div id="representativeSection" class="row g-2 d-none mt-3">
-            <div class="col-12">
-              <h5>Representative Details</h5>
-            </div>
-
-            <div class="col-md-12">
+            <div id="representativeSection" class="col-md-6 g-2">
+       
+<div class="row">
+            <div class="col-md-4">
               <input
                 class="form-control form-control-sm rounded-0"
                 name="repName"
@@ -296,7 +272,7 @@
               />
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-4">
               <select class="form-select form-select-sm rounded-0" name="repRelationship">
                 <option value="">Relationship</option>
                 <option>Spouse</option>
@@ -307,7 +283,7 @@
               </select>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-4">
               <select class="form-select form-select-sm rounded-0" name="repReason">
                 <option value="">Reason for Representation</option>
                 <option>Member is incapacitated</option>
@@ -315,37 +291,13 @@
               </select>
             </div>
           </div>
-        </div>
-
-        <!-- Part IV -->
-        <div class="col-12 mt-4">
-          <div class="section-header">
-            Part IV — Admission & Discharge Details
           </div>
+</div>
 
-          <div class="row">
-            <div class="col-md-6">
-              <label>Date & Time Admitted:</label>
-              <input
-                type="datetime-local"
-                class="form-control form-control-sm rounded-0"
-                name="datetimeAdmitted"
-                step="1"
-              />
-            </div>
-
-            <div class="col-md-6">
-              <label>Date & Time Discharged:</label>
-              <input
-                type="datetime-local"
-                class="form-control form-control-sm rounded-0"
-                name="datetimeDischarged"
-                step="1"
-              />
-            </div>
-          </div>
         </div>
-          <button
+          
+      </div>
+      <button
             class="btn btn-light"
             style="
               background-color: #009e60;
@@ -356,7 +308,7 @@
           >
             Submit Claim Form
           </button>
-      </div>
+      </form>
     </div>
   </div>
 </div>
