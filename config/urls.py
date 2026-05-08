@@ -21,11 +21,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('animalBite/', include('animal_bite.urls')),
+    path('animal_bite/', include('animal_bite.urls')),
     path('dental/', include('dental.urls')),
     path('familyPlanning/', include('family_planning.urls')),
 ]
 
 # Serve static files in development
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.BASE_DIR / 'static')
+    urlpatterns += static(settings.STATIC_URL + 'pdfs/', document_root=settings.BASE_DIR / 'animal_bite' / 'static' / 'pdfs')

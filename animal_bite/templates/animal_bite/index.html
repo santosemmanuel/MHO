@@ -1,3 +1,4 @@
+{% load static %}
 {% include 'animal_bite/header.html' %}
 
 <div class="container-lg mt-5">
@@ -309,41 +310,24 @@
           </div>
             
         </div>
-     
-      </form>
-   <button
+        <button
               class="btn btn-light mt-3"
               style="
                 background-color: #009e60;
                 border-color: #009e60;
                 color: #ffff;
-                font-weight: bold;
               "
               data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-toggle="modal"
+              type="submit"
+
             >
               Submit Claim Form
         </button>
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-fullscreen">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+      </form>
+   
+       
     </div>
   </div>
-</div>
-    </div>
-  </div>
-
 </div>
 <script>
   // Dependent Section Logic (Updated for Radio Buttons)
@@ -381,7 +365,554 @@
 
       radioMember.addEventListener("change", updateRepresentativeSection);
       radioRep.addEventListener("change", updateRepresentativeSection);
+
+      // Uppercase Input Logic
+      const allTextInputs = document.querySelectorAll(
+        "#philhealthForm input[type='text']",
+      );
+      allTextInputs.forEach((input) => {
+        input.addEventListener("input", function () {
+          this.value = this.value.toUpperCase();
+        });
+      });
       
 </script>
+<script>
+      let leyteData = {};
+      let leyteBrgy = {};
+
+      fetch("{% static 'data/municipalities.json' %}")
+        .then((response) => response.json())
+        .then((data) => {
+          leyteData = data;
+          populateMunicipalities();
+        })
+        .catch((error) => console.error("Error loading JSON:", error));
+
+      fetch("{% static 'data/barangays.json' %}")
+        .then((response) => response.json())
+        .then((data) => {
+          leyteBrgy = data;
+        })
+        .catch((error) => console.error("Error loading JSON:", error));
+
+      function populateMunicipalities() {
+        const municipalitySelect = document.getElementById("municipality");
+
+        for (let iteration in leyteData) {
+          const option = document.createElement("option");
+          option.value = leyteData[iteration].name;
+          option.text = leyteData[iteration].name;
+          municipalitySelect.appendChild(option);
+        }
+      }
+
+      document
+        .getElementById("municipality")
+        .addEventListener("change", function () {
+          const barangaySelect = document.getElementById("barangay");
+          barangaySelect.innerHTML =
+            '<option value="">-- Select Barangay --</option>';
+          const selectedMunicipality = this.value;
+          const filterBrgy = leyteBrgy.filter(
+            (item) => item.citymun === selectedMunicipality,
+          );
+
+          filterBrgy.forEach((brgy) => {
+            const option = document.createElement("option");
+            option.value = brgy.name;
+            option.text = brgy.name;
+            barangaySelect.appendChild(option);
+          });
+        });
+</script>
+<script>
+      // Utility function to toggle required attributes
+      function toggleRequired(selector, isRequired) {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach((input) => {
+          if (isRequired) {
+            input.setAttribute("required", "");
+          } else {
+            input.removeAttribute("required");
+          }
+        });
+      }
+
+
+      // Submission Logic (using Bootstrap's validation class)
+      (function () {
+        "use strict";
+        const form = document.getElementById("philhealthForm");
+
+        form.addEventListener(
+          "submit",
+          async function (event) {
+            // Prevent default submission behavior
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            // Check if the form is valid according to HTML5/Bootstrap validation
+            if (!form.checkValidity()) {
+              form.classList.add("was-validated");
+              return; // Stop if validation fails
+            }
+
+            // --- Form is valid, proceed with data collection and submission ---
+
+            const patientIsMemberValue = document.querySelector(
+              'input[name="patientIsMember"]:checked',
+            ).value;
+
+            const data = {
+              pin: form.pin.value,
+              lastName: form.lastName.value,
+              firstName: form.firstName.value,
+              nameExt: form.nameExt.value,
+              middleName: form.middleName.value,
+              dob: form.dob.value,
+              sex: form.sex.value,
+              street: form.street.value,
+              barangay: form.barangay.value,
+              municipality: form.municipality.value,
+              mobile: form.mobile.value,
+              email: form.email.value,
+              patientIsMember: patientIsMemberValue,
+              dependent:
+                patientIsMemberValue === "no"
+                  ? {
+                      depPin: form.depPin.value,
+                      depLname: form.depLname.value,
+                      depFname: form.depFname.value,
+                      depMname: form.depMname.value,
+                      depDob: form.depDob.value,
+                      depSex: form.depSex.value,
+                      depExt: form.depExt.value,
+                      relationship: form.relationship.value,
+                    }
+                  : null,
+              signee: form.signee.value,
+              representative:
+                form.signee.value == "representative"
+                  ? {
+                      repName: form.repName.value,
+                      repRelationship: form.repRelationship.value,
+                      repReason: form.repReason.value,
+                    }
+                  : null,
+            };
+
+            // ** NEW SUBMISSION VIA FETCH API TO /submit_form/ **
+            try {
+              console.log("Attempting to submit data to /submit_form/:", data);
+
+              const response = await fetch("/animal_bite/submit_form/", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": getCookie("csrftoken"),
+                },
+                body: JSON.stringify(data),
+              });
+
+              const responseData = await response.json();
+
+              if (response.ok && responseData.status === "success") {
+                alert("✅ MHO Burauen Form submitted successfully!");
+                const pdfFiles = responseData.pdf_files || [];
+                if (pdfFiles.length > 0) {
+                  showPdfPreviewModal(pdfFiles);
+                } else {
+                  alert("⚠️ No PDF files were generated.");
+                }
+                form.reset();
+                form.classList.remove("was-validated");
+              } else {
+                const errorText = responseData.message || await response.text();
+                console.error("Submission failed:", errorText);
+                alert(
+                  `⚠️ Submission failed. ${errorText || 'Server responded with status: ' + response.status}`,
+                );
+              }
+            } catch (error) {
+              // Network error (e.g., server offline)
+              console.error(
+                "Network or unexpected error during submission:",
+                error,
+              );
+              alert(
+                "❌ An error occurred. Could not connect to the submission server.",
+              );
+            }
+
+            // Always add validation class for immediate visual feedback after attempt
+            form.classList.add("was-validated");
+          },
+          false,
+        );
+      })();
+
+      // Helper function to get CSRF token from cookies
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+
+      function showPdfPreviewModal(pdfFiles) {
+        const modalElement = document.getElementById('pdfPreviewModal');
+        const pdfTabs = document.getElementById('pdfModalTabs');
+
+        pdfTabs.innerHTML = '';
+
+        function createTab(label, type, fileName) {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'nav-link';
+          button.textContent = label;
+          button.dataset.type = type;
+          if (fileName) {
+            button.dataset.pdfFile = fileName;
+          }
+          button.addEventListener('click', function () {
+            const allButtons = pdfTabs.querySelectorAll('button');
+            allButtons.forEach((btn) => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            if (type === 'pdf') {
+              updateModalPdf(this.dataset.pdfFile);
+            } else {
+              updateModalESOATab();
+            }
+          });
+          return button;
+        }
+
+        pdfFiles.forEach((file, index) => {
+          const label = file.replace(/_/g, ' ').replace('.pdf', '').toUpperCase();
+          const button = createTab(label, 'pdf', file);
+          if (index === 0) {
+            button.classList.add('active');
+          }
+          const listItem = document.createElement('li');
+          listItem.className = 'nav-item';
+          listItem.appendChild(button);
+          pdfTabs.appendChild(listItem);
+
+          if (index === 0) {
+            updateModalPdf(file);
+          }
+        });
+
+        const esoATab = createTab('eSOA', 'esoA');
+        const esoAListItem = document.createElement('li');
+        esoAListItem.className = 'nav-item';
+        esoAListItem.appendChild(esoATab);
+        pdfTabs.appendChild(esoAListItem);
+
+        if (pdfFiles.length === 0) {
+          esoATab.classList.add('active');
+          updateModalESOATab();
+        }
+
+        const pdfModal = new bootstrap.Modal(modalElement, {
+          backdrop: 'static',
+          keyboard: false,
+        });
+        pdfModal.show();
+      }
+
+      function updateModalPdf(fileName) {
+        const pdfObject = document.getElementById('pdfPreviewObject');
+        const pdfViewerLink = document.getElementById('pdfViewerLink');
+        const pdfPreviewContent = document.getElementById('pdfPreviewContent');
+        const eSOAContent = document.getElementById('eSOAContent');
+
+        const pdfUrl = `/static/pdfs/${fileName}`;
+        pdfObject.setAttribute('data', pdfUrl);
+        pdfObject.dataset.currentPdf = pdfUrl;
+        pdfViewerLink.href = pdfUrl;
+        document.getElementById('pdfFallbackLink').href = pdfUrl;
+
+        pdfPreviewContent.classList.remove('d-none');
+        eSOAContent.classList.add('d-none');
+        pdfViewerLink.classList.remove('d-none');
+      }
+
+      async function updateModalESOATab() {
+        const pdfPreviewContent = document.getElementById('pdfPreviewContent');
+        const eSOAContent = document.getElementById('eSOAContent');
+        const pdfViewerLink = document.getElementById('pdfViewerLink');
+
+        pdfPreviewContent.classList.add('d-none');
+        eSOAContent.classList.remove('d-none');
+        pdfViewerLink.classList.add('d-none');
+
+        if (eSOAContent.dataset.loaded === 'true') {
+          return;
+        }
+
+        eSOAContent.innerHTML = '<div class="text-center py-5">Loading eSOA content...</div>';
+
+        try {
+          const [statementData, feeSummaryData, professionalFeesData, itemizedChargesData] = await Promise.all([
+            fetch('{% static "json/statement-data.json" %}').then((res) => res.json()),
+            fetch('{% static "json/fee-summary.json" %}').then((res) => res.json()),
+            fetch('{% static "json/professional-fees.json" %}').then((res) => res.json()),
+            fetch('{% static "json/itemized-charges.json" %}').then((res) => res.json()),
+          ]);
+
+          eSOAContent.innerHTML = renderESOAContent(statementData, feeSummaryData, professionalFeesData, itemizedChargesData);
+          eSOAContent.dataset.loaded = 'true';
+        } catch (error) {
+          eSOAContent.innerHTML = `<div class="alert alert-danger">Unable to load eSOA content: ${error.message}</div>`;
+        }
+      }
+
+      function renderESOAContent(statementData, feeSummaryData, professionalFeesData, itemizedChargesData) {
+        const header = statementData.header || {};
+        const patientInfo = statementData.patientInfo || {};
+
+        const sectionHeader = `
+          <div class="mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div>
+                <h4 class="mb-1">${header.title || 'Statement of Account'}</h4>
+                <p class="mb-0">${header.facility || ''}</p>
+                <p class="mb-0">${header.location || ''}</p>
+              </div>
+              <div style="text-align:right;">
+                <img src="${staticUrl(header.leftLogo)}" alt="Left logo" style="height: 60px; margin-right: 10px;" />
+                <img src="${staticUrl(header.rightLogo)}" alt="Right logo" style="height: 60px;" />
+              </div>
+            </div>
+            <p><strong>SOA Reference No:</strong> ${header.refNo || ''}</p>
+          </div>
+        `;
+
+        const patientSections = `
+          <div class="row mb-4">
+            <div class="col-md-6">
+              ${renderInfoBlock(patientInfo.left || [])}
+            </div>
+            <div class="col-md-6">
+              ${renderInfoBlock(patientInfo.right || [])}
+            </div>
+          </div>
+        `;
+
+        const feeSummarySection = Object.keys(feeSummaryData).map((category) => `
+          <div class="mb-4">
+            <h5>${category} Fee Summary</h5>
+            <table class="table table-bordered table-sm">
+              <thead>
+                <tr>
+                  <th>Fee Particulars</th>
+                  <th class="text-end">Amount</th>
+                  <th class="text-end">Mandatory Discount</th>
+                  <th class="text-end">PhilHealth</th>
+                  <th class="text-end">Other Funding Sources</th>
+                  <th class="text-end">Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${feeSummaryData[category].map((row) => `
+                  <tr>
+                    <td>${row.label}</td>
+                    <td class="text-end">${formatCurrency(row.amount)}</td>
+                    <td class="text-end">${formatCurrency(row.discount)}</td>
+                    <td class="text-end">${row.philhealth}</td>
+                    <td class="text-end">${row.otherFunding}</td>
+                    <td class="text-end">${row.balance}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `).join('');
+
+        const professionalSection = Object.keys(professionalFeesData).map((category) => `
+          <div class="mb-4">
+            <h5>${category} Professional Fees</h5>
+            <table class="table table-bordered table-sm">
+              <thead>
+                <tr>
+                  <th>Physician Accreditation Number</th>
+                  <th>Physician Name</th>
+                  <th class="text-end">Amount</th>
+                  <th class="text-end">Discount</th>
+                  <th class="text-end">PhilHealth</th>
+                  <th class="text-end">Other Funding Sources</th>
+                  <th class="text-end">Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${professionalFeesData[category].map((row) => `
+                  <tr>
+                    <td>${row.accreditation}</td>
+                    <td>${row.physician}</td>
+                    <td class="text-end">${formatCurrency(row.amount)}</td>
+                    <td class="text-end">${formatCurrency(row.discount)}</td>
+                    <td class="text-end">${formatCurrency(row.philhealth)}</td>
+                    <td class="text-end">${row.otherFunding}</td>
+                    <td class="text-end">${formatCurrency(row.balance)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `).join('');
+
+        const itemizedSection = Object.keys(itemizedChargesData).map((category) => `
+          <div class="mb-4">
+            <h5>${category} Itemized Charges</h5>
+            <table class="table table-bordered table-sm">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Item name</th>
+                  <th>Unit of Measurement</th>
+                  <th class="text-end">Price</th>
+                  <th class="text-end">Quantity</th>
+                  <th class="text-end">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemizedChargesData[category].map((row) => `
+                  <tr>
+                    <td>${row.date}</td>
+                    <td>${row.item}</td>
+                    <td>${row.unit}</td>
+                    <td class="text-end">${formatCurrency(row.price)}</td>
+                    <td class="text-end">${row.qty}</td>
+                    <td class="text-end">${formatCurrency(row.amount)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `).join('');
+
+        return `
+          <div class="p-3">
+            ${sectionHeader}
+            ${patientSections}
+            ${feeSummarySection}
+            ${professionalSection}
+            ${itemizedSection}
+          </div>
+        `;
+      }
+
+      function renderInfoBlock(items) {
+        return `
+          <div class="border rounded p-3 mb-3">
+            ${items.map((item) => `
+              <div class="mb-2">
+                <strong>${item.label}:</strong>
+                <div>${Array.isArray(item.value) ? item.value.map((val) => `<div>${val}</div>`).join('') : item.value}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      function staticUrl(path) {
+        if (!path) return '';
+        return path.startsWith('/') ? path : `/static/${path}`;
+      }
+
+      function formatCurrency(value) {
+        if (value === null || value === undefined) {
+          return '';
+        }
+        if (value === '-') {
+          return '-';
+        }
+        if (typeof value === 'string') {
+          return value;
+        }
+        return value.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+      }
+
+      function printPdf() {
+        const pdfObject = document.getElementById('pdfPreviewObject');
+        const eSOAContent = document.getElementById('eSOAContent');
+
+        if (!pdfObject.classList.contains('d-none') && pdfObject.dataset.currentPdf) {
+          if (pdfObject.contentWindow) {
+            pdfObject.contentWindow.focus();
+            pdfObject.contentWindow.print();
+          } else {
+            window.open(pdfObject.dataset.currentPdf, '_blank');
+          }
+          return;
+        }
+
+        if (!eSOAContent.classList.contains('d-none')) {
+          const printWindow = window.open('', '_blank');
+          printWindow.document.write(`
+            <html><head><title>Print eSOA</title>
+            <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+            <style>body{margin:20px;font-family:Arial,sans-serif;}table{width:100%;border-collapse:collapse;}th,td{border:1px solid #000;padding:6px;}</style>
+            </head><body>${eSOAContent.innerHTML}</body></html>
+          `);
+          printWindow.document.close();
+          printWindow.focus();
+          printWindow.print();
+        }
+      }
+
+      // Initialize on load
+      updateRepresentativeSection();
+      document
+        .querySelector('input[name="patientIsMember"]:checked')
+        .dispatchEvent(new Event("change"));
+    </script>
+
+<!-- PDF Preview Modal -->
+<div class="modal fade" id="pdfPreviewModal" tabindex="-1" aria-labelledby="pdfPreviewModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="pdfPreviewModalLabel">Generated PDF Preview</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs mb-3" id="pdfModalTabs" role="tablist"></ul>
+        <div id="pdfPreviewContent" class="mb-3">
+          <div class="ratio ratio-16x9" style="min-height: 70vh;">
+            <object id="pdfPreviewObject" data="" type="application/pdf" width="100%" height="100%">
+              <p>Your browser does not support PDF preview. You can <a id="pdfFallbackLink" href="#" target="_blank">open the PDF in a new tab</a> instead.</p>
+            </object>
+          </div>
+        </div>
+        <div id="eSOAContent" class="d-none" style="max-height: 70vh; overflow: auto;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" style="background-color: #009e60; border-color: #009e60; color: #fff;" onclick="printPdf()">
+          <i class="fa-solid fa-print me-2"></i> Print PDF
+        </button>
+        <a id="pdfViewerLink" class="btn btn-secondary" href="#" target="_blank">
+          <i class="fa-solid fa-up-right-from-square me-2"></i> Open Full PDF
+        </a>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% include 'animal_bite/footer.html' %}
