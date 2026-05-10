@@ -163,3 +163,84 @@
   transform: scale(1.5);
   transform-origin: left center;
 }
+
+.animal-bite-body {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f4f8f6 0%, #f8fbf9 50%, #ffffff 100%);
+}
+.animal-bite-page {
+    max-width: 1180px;
+}
+.animal-bite-banner {
+    background: linear-gradient(135deg, rgba(0,158,96,0.13), rgba(255,255,255,0.98));
+    border: 1px solid rgba(0,158,96,0.16);
+    box-shadow: 0 20px 50px rgba(15, 46, 34, 0.06);
+    border-radius: 1.5rem;
+}
+.animal-bite-banner .banner-title { color: #0e5d3a; }
+.animal-bite-banner .banner-subtitle { color: #6c757d; }
+.animal-bite-banner .banner-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 1rem;
+    background: rgba(0,158,96,0.14);
+    display: grid;
+    place-items: center;
+    color: #0b5d35;
+}
+.animal-bite-section {
+    border-radius: 1.25rem;
+    overflow: hidden;
+    border: 1px solid rgba(15, 46, 34, 0.08);
+    background: #fff;
+}
+.animal-bite-section .section-header {
+    padding: 1rem 1.25rem;
+    background: #f8faf8;
+    border-bottom: 1px solid rgba(15, 46, 34, 0.06);
+}
+.animal-bite-section .section-header h5 { margin-bottom: 0; font-size: 1rem; font-weight: 700; }
+.animal-bite-section .section-body { padding: 1.25rem; }
+.animal-bite-page .form-control,
+.animal-bite-page .form-select {
+    border-radius: 0.85rem !important;
+    border: 1px solid #d9e5df;
+    background: #ffffff;
+    padding: 0.85rem 0.95rem;
+}
+.animal-bite-page .form-control:focus,
+.animal-bite-page .form-select:focus {
+    border-color: var(--green-dark);
+    box-shadow: 0 0 0 0.15rem rgba(0, 158, 96, 0.15) !important;
+}
+.form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #4f6360;
+}
+.btn-toggle-group .btn {
+    min-width: 110px;
+}
+.btn-toggle-group .btn-check:checked + .btn {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+}
+.btn-submit {
+    background: linear-gradient(135deg, #009e60, #0a8c56);
+    border: none;
+    color: #fff;
+    box-shadow: 0 12px 28px rgba(0, 158, 96, 0.18);
+}
+.btn-submit:hover {
+    background: linear-gradient(135deg, #0b7a4f, #0a6e48);
+}
+@media (max-width: 767.98px) {
+    .animal-bite-banner {
+        text-align: center;
+    }
+    .animal-bite-banner .d-flex {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}

@@ -1,19 +1,20 @@
+
+{% load humanize %}{% load static %}
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PDF Tabs Viewer</title>
-    <link
-      href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
-      rel="stylesheet"
-    />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
       :root {
         --color-primary-green: #28a745;
         --color-dark-green: #1e7e34;
         --color-text-dark: #343a40;
         --color-bg-light: #f8f9fa;
+        --color-surface: #ffffff;
       }
 
       body {
@@ -30,7 +31,6 @@
         padding-bottom: 20px;
       }
 
-      /* --- UNIFIED HEADER STYLE (Copied from Index Page) --- */
       .app-header {
         background: linear-gradient(
           to right,
@@ -38,45 +38,62 @@
           #4caf50
         );
         color: white;
-        padding: 15px 30px;
-        border-radius: 12px;
-        margin-bottom: 25px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        padding: 20px 26px;
+        border-radius: 16px;
+        margin-bottom: 24px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
         display: flex;
         align-items: center;
         justify-content: space-between;
+        gap: 20px;
       }
+
+      .app-header .d-flex {
+        align-items: center;
+      }
+
       .app-header h1 {
-        font-size: 1.6rem;
+        font-size: 1.55rem;
         font-weight: 700;
         margin-bottom: 0;
+        letter-spacing: 0.02em;
       }
+
       .app-header .subtitle {
         font-size: 0.95rem;
-        opacity: 0.9;
-        margin-top: 5px;
+        opacity: 0.92;
+        margin-top: 6px;
       }
+
       .mho-logo {
-        width: 50px;
-        height: 50px;
+        width: 52px;
+        height: 52px;
         border-radius: 50%;
         object-fit: cover;
-        margin-right: 15px;
+        margin-right: 14px;
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
       }
-      .app-header .header-icon-right {
-        font-size: 2rem;
-        color: rgba(255, 255, 255, 0.8);
-      }
-      /* --- END UNIFIED HEADER STYLE --- */
 
-      /* --- Tab Navigation Styling (Rest of UI) --- */
+      .header-icon-right {
+        font-size: 2.15rem;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .viewer-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
       .nav-pills .nav-link {
-        border-radius: 8px;
+        border-radius: 999px;
         color: var(--color-text-dark);
         font-weight: 500;
         margin-right: 10px;
-        transition: all 0.2s;
-        padding: 8px 15px;
+        transition: all 0.2s ease;
+        padding: 10px 18px;
       }
 
       .nav-pills .nav-link.active,
@@ -85,27 +102,53 @@
         color: white;
       }
 
-      /* --- Button Styling --- */
       .btn-back-modern {
         background-color: #6c757d;
         border-color: #6c757d;
-        border-radius: 8px;
-        font-weight: 500;
+        border-radius: 12px;
+        font-weight: 600;
         color: white;
+        padding: 10px 18px;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
       }
+
       .btn-back-modern:hover {
         background-color: #5a6268;
         border-color: #5a6268;
         color: white;
       }
 
-      /* --- PDF Frame Styling --- */
+      .viewer-card {
+        background: var(--color-surface);
+        border: none;
+        border-radius: 18px;
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+      }
+
+      .viewer-card .card-body {
+        padding: 22px;
+      }
+
+      .tab-content {
+        min-height: 65vh;
+      }
+
+      .tab-pane {
+        display: none;
+      }
+
+      .tab-pane.active,
+      .tab-pane.show {
+        display: block;
+      }
+
       .pdf-frame {
         width: 100%;
-        height: 75vh;
-        border: 1px solid #ced4da;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        min-height: 75vh;
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
       }
     </style>
   </head>
@@ -114,7 +157,7 @@
       <div class="app-header">
         <div class="d-flex align-items-center">
           <img
-            src="{{ url_for('static', filename='img/MHO_Logo.jpg') }}"
+            src="{% static 'img/MHO_Logo.jpg' %}"
             alt="MHO Burauen Logo Placeholder"
             class="mho-logo"
           />
@@ -127,16 +170,20 @@
         </div>
         <i class="fa-solid fa-dog header-icon-right"></i>
       </div>
-      <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="viewer-actions mb-4">
         <ul class="nav nav-pills" id="pdfTabNav"></ul>
         <button
-          class="btn btn-back-modern mx-2"
+          class="btn btn-back-modern"
           onclick="window.location.href = '/'"
         >
           <i class="fa-solid fa-arrow-left me-1"></i> Back
         </button>
       </div>
-      <div class="tab-content mt-3" id="pdfTabContent"></div>
+      <div class="viewer-card">
+        <div class="card-body">
+          <div class="tab-content" id="pdfTabContent"></div>
+        </div>
+      </div>
     </div>
     <style>
       /* Base font and color */
@@ -312,12 +359,12 @@
         <div style="margin-bottom: 3%">
           <div class="header-top">
             <img
-              src="{{ url_for('static', filename=header.leftLogo) }}"
+              src="{% static header.leftLogo %}"
               alt="Left logo"
             />
             <h2 class="header-title">{{ header.title }}</h2>
             <img
-              src="{{ url_for('static', filename=header.rightLogo) }}"
+              src="{% static header.rightLogo %}"
               alt="Right logo"
             />
           </div>
@@ -325,38 +372,45 @@
           <h3>{{ header.facility }}</h3>
           <h3>{{ header.location }}</h3>
         </div>
-        <div class="info">
-          <div class="info-column">
-            {% for item in patient_info.left %}
-            <div class="info-row">
-              <strong>{{ item.label | safe }}:</strong>
-              <div class="value">
-                {% if item.value is iterable and item.value is not string %} {%
-                for val in item.value %}
-                <div class="line-value">{{ val }}</div>
-                {% endfor %} {% else %}
-                <div class="line-value">{{ item.value }}</div>
-                {% endif %}
-              </div>
-            </div>
-            {% endfor %}
-          </div>
-          <div class="info-column">
-            {% for item in patient_info.right %}
-            <div class="info-row">
-              <strong>{{ item.label }}:</strong>
-              <div class="value">
-                {% if item.value is iterable and item.value is not string %} {%
-                for val in item.value %}
-                <div class="line-value">{{ val }}</div>
-                {% endfor %} {% else %}
-                <div class="line-value">{{ item.value }}</div>
-                {% endif %}
-              </div>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
+<div class="info">
+  <div class="info-column">
+    {% for item in patient_info.left %}
+    <div class="info-row">
+      <strong>{{ item.label | safe }}:</strong>
+
+      <div class="value">
+        {% if item.value.0 %}
+          {% for val in item.value %}
+            <div class="line-value">{{ val }}</div>
+          {% endfor %}
+        {% else %}
+          <div class="line-value">{{ item.value }}</div>
+        {% endif %}
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="info-column">
+    {% for item in patient_info.right %}
+    <div class="info-row">
+      <strong>{{ item.label }}:</strong>
+
+      <div class="value">
+        {% if item.value.0 %}
+          {% for val in item.value %}
+            <div class="line-value">{{ val }}</div>
+          {% endfor %}
+        {% else %}
+          <div class="line-value">{{ item.value }}</div>
+        {% endif %}
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+</div>
         <div>
           <h3 class="my-3">Summary of Fees</h3>
           <table>
@@ -380,7 +434,7 @@
                 </td>
                 <td class="right">
                   {% if row.discount is string %} {{ row.discount }} {% else %}
-                  {{ "{:,.2f}".format(row.discount) }} {% endif %}
+                  {{ row.discount|floatformat:2 }} {% endif %}
                 </td>
                 <td class="right">{{ row.philhealth }}</td>
                 <td class="right">{{ row.otherFunding }}</td>
@@ -404,7 +458,7 @@
                   >
                 </td>
                 <td class="right">
-                  <strong>{{ "{:,.2f}".format(philhealth_amount) }}</strong>
+                  <strong>{{ philhealth_amount|floatformat:2|intcomma }}</strong>
                 </td>
                 <td class="right">
                   <strong
@@ -555,51 +609,10 @@
         </div>
       </div>
     </div>
-    <!--
-    <script>
-      // ====== Receive data from backend (DO NOT ALTER) ======
-      const pdfFiles = {{ pdf_files | tojson }};
-
-      // DOM elements
-      const tabNav = document.getElementById("pdfTabNav");
-      const tabContent = document.getElementById("pdfTabContent");
-
-      // ====== Dynamically render the tabs ======
-      pdfFiles.forEach((file, index) => {
-          const tabId = `tab-${index}`;
-          const isActive = index === 0 ? "active" : "";
-          const isShown = index === 0 ? "show active" : "";
-
-          // --- Generate Tab Button ---
-          tabNav.innerHTML += `
-              <li class="nav-item" role="presentation">
-                  <button class="nav-link ${isActive}" id="${tabId}-tab" data-bs-toggle="tab" data-bs-target="#${tabId}" type="button" role="tab">
-                      ${file.name}
-                  </button>
-              </li>
-          `;
-
-          // --- Generate Tab Content ---
-          tabContent.innerHTML += `
-              <div class="tab-pane fade ${isShown}" id="${tabId}" role="tabpanel">
-
-                  <iframe class="pdf-frame" src="${file.url}"></iframe>
-
-
-              </div>
-          `;
-      });
-
-      // ===== Print Function (DO NOT ALTER) =====
-      function printPDF(filePath) {
-          const printWin = window.open(filePath);
-          printWin.focus();
-          printWin.print();
-      }
-</script> -->
+    <script id="pdf-files-data" type="application/json">{{ pdf_files_json|safe }}</script>
     <script>
             // ====== Receive data from backend (DO NOT ALTER) ======
-            const pdfFiles = {{ pdf_files | tojson }};
+            const pdfFiles = JSON.parse(document.getElementById('pdf-files-data').textContent);
 
             // DOM elements
             const tabNav = document.getElementById("pdfTabNav");
