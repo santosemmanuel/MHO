@@ -244,3 +244,151 @@
         gap: 1rem;
     }
 }
+
+/* Family Planning Styles */
+.family-planning-body {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f9f5ff 0%, #fbf9ff 50%, #ffffff 100%);
+}
+.family-planning-page {
+    max-width: 1180px;
+}
+.family-planning-banner {
+    background: linear-gradient(135deg, rgba(142,68,173,0.13), rgba(255,255,255,0.98));
+    border: 1px solid rgba(142,68,173,0.16);
+    box-shadow: 0 20px 50px rgba(142, 68, 173, 0.06);
+    border-radius: 1.5rem;
+}
+.family-planning-banner .banner-title { color: #8E44AD; }
+.family-planning-banner .banner-subtitle { color: #6c757d; }
+.family-planning-banner .banner-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 1rem;
+    background: rgba(142,68,173,0.14);
+    display: grid;
+    place-items: center;
+    color: #6a2c7a;
+}
+.family-planning-section {
+    border-radius: 1.25rem;
+    overflow: hidden;
+    border: 1px solid rgba(142, 68, 173, 0.08);
+    background: #fff;
+}
+.family-planning-section .section-header {
+    padding: 1rem 1.25rem;
+    background: #faf7fb;
+    border-bottom: 1px solid rgba(142, 68, 173, 0.06);
+}
+.family-planning-section .section-header h5 { margin-bottom: 0; font-size: 1rem; font-weight: 700; }
+.family-planning-section .section-body { padding: 1.25rem; }
+.family-planning-page .form-control,
+.family-planning-page .form-select {
+    border-radius: 0.85rem !important;
+    border: 1px solid #e8d5f0;
+    background: #ffffff;
+    padding: 0.85rem 0.95rem;
+}
+.family-planning-page .form-control:focus,
+.family-planning-page .form-select:focus {
+    border-color: #8E44AD;
+    box-shadow: 0 0 0 0.15rem rgba(142, 68, 173, 0.15) !important;
+}
+.family-planning-page .btn-toggle-group .btn-check:checked + .btn {
+    background: #8E44AD;
+    color: #fff;
+    border-color: #8E44AD;
+}
+.family-planning-page .btn-submit {
+    background: linear-gradient(135deg, #8E44AD, #7b3a9e);
+    border: none;
+    color: #fff;
+    box-shadow: 0 12px 28px rgba(142, 68, 173, 0.18);
+}
+.family-planning-page .btn-submit:hover {
+    background: linear-gradient(135deg, #7b3a9e, #6a2c7a);
+}
+@media (max-width: 767.98px) {
+    .family-planning-banner {
+        text-align: center;
+    }
+    .family-planning-banner .d-flex {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+/* Dental Styles */
+.dental-body {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f0f8ff 0%, #f5faff 50%, #ffffff 100%);
+}
+.dental-page {
+    max-width: 1180px;
+}
+.dental-banner {
+    background: linear-gradient(135deg, rgba(0,123,255,0.13), rgba(255,255,255,0.98));
+    border: 1px solid rgba(0,123,255,0.16);
+    box-shadow: 0 20px 50px rgba(0, 123, 255, 0.06);
+    border-radius: 1.5rem;
+}
+.dental-banner .banner-title { color: #007bff; }
+.dental-banner .banner-subtitle { color: #6c757d; }
+.dental-banner .banner-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 1rem;
+    background: rgba(0,123,255,0.14);
+    display: grid;
+    place-items: center;
+    color: #0056b3;
+}
+.dental-section {
+    border-radius: 1.25rem;
+    overflow: hidden;
+    border: 1px solid rgba(0, 123, 255, 0.08);
+    background: #fff;
+}
+.dental-section .section-header {
+    padding: 1rem 1.25rem;
+    background: #f7fbff;
+    border-bottom: 1px solid rgba(0, 123, 255, 0.06);
+}
+.dental-section .section-header h5 { margin-bottom: 0; font-size: 1rem; font-weight: 700; }
+.dental-section .section-body { padding: 1.25rem; }
+.dental-page .form-control,
+.dental-page .form-select {
+    border-radius: 0.85rem !important;
+    border: 1px solid #cce7ff;
+    background: #ffffff;
+    padding: 0.85rem 0.95rem;
+}
+.dental-page .form-control:focus,
+.dental-page .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.15) !important;
+}
+.dental-page .btn-toggle-group .btn-check:checked + .btn {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+.dental-page .btn-submit {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+    color: #fff;
+    box-shadow: 0 12px 28px rgba(0, 123, 255, 0.18);
+}
+.dental-page .btn-submit:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+}
+@media (max-width: 767.98px) {
+    .dental-banner {
+        text-align: center;
+    }
+    .dental-banner .d-flex {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}

@@ -218,6 +218,8 @@ def view_print(request):
     for item_date in itemized_charges:
         item_date['date'] = today_str
 
+   
+
     return render(request, 'animal_bite/viewPrintPDF.html', {
         'pdf_files': pdf_files,
         'pdf_files_json': json.dumps(pdf_files),
@@ -226,9 +228,51 @@ def view_print(request):
         'fee_summary': fee_summary,
         'professional_fees': professional_fees,
         'itemized_charges': itemized_charges,
+       
         'philhealth_amount': 5850.00,
+        "total_amount": sum(
+        to_number(x.get("amount"))
+        for x in fee_summary
+    ),
+
+    "total_discount": sum(
+        to_number(x.get("discount"))
+        for x in fee_summary
+    ),
+
+    "total_other_funding": sum(
+        to_number(x.get("otherFunding"))
+        for x in fee_summary
+    ),
+
+    "total_balance": sum(
+        to_number(x.get("balance"))
+        for x in fee_summary
+    ),
+
+    "professional_total": sum(
+        to_number(x.get("balance"))
+        for x in professional_fees
+    ),
+
+    "itemized_total": sum(
+        to_number(x.get("amount"))
+        for x in itemized_charges
+    ),
     })
 
+def to_number(value):
+    if value in [None, "", "-"]:
+        return 0
+
+    if isinstance(value, (int, float)):
+        return value
+
+    # remove commas from strings like "1,000.00"
+    try:
+        return float(str(value).replace(",", ""))
+    except ValueError:
+        return 0
 
 def download_pdf(request, filename):
     """

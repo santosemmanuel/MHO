@@ -1,71 +1,45 @@
+{% load static %}
 {% include 'family_planning/header.html' %}
 
-<div class="container-lg mt-5">
-  <div class="card rounded-0">
-    <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center">
-        
-        <!-- LEFT -->
+<div class="container-xl family-planning-page my-5">
+  <div class="card family-planning-banner mb-4">
+    <div class="card-body py-5 px-4">
+      <div class="d-flex align-items-center justify-content-between gap-4 flex-column flex-md-row">
         <div>
-          <h3 class="mb-0 fw-bold" style="color: #8E44AD">
+          <h3 class="mb-2 fw-bold banner-title h3">
             MHO Burauen Family Planning
           </h3>
-          <div class="subtitle text-muted">
+          <div class="subtitle banner-subtitle">
             PhilHealth CF1 / CF2 / CSF Claim Form
           </div>
         </div>
 
-        <!-- RIGHT ICON -->
-        <div>
-          <i
-            class="fa-solid fa-baby text-muted"
-            style="font-size: 50px;"
-          ></i>
+        <div class="banner-icon shadow-sm">
+          <i class="fa-solid fa-baby fa-2x"></i>
         </div>
-
       </div>
-      
     </div>
   </div>
-  <div class="card rounded-0">
-    <div class="card-body p-4">
-      <form id="philhealthForm" class="needs-validation" novalidate>
-        <div class="row g-4">
+  <form id="philhealthForm" class="needs-validation" action="/family_planning/submit_form/" method="post" novalidate>
+    {% csrf_token %}
 
-          <!-- Part I -->
-          <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <div class="align-items-center">
-              <h5 class="my-1"><i class="fa-solid fa-user me-2 text-muted"></i>Member Information</h5>
-              </div>
-              <div class="text-end">
-
-                <label class="form-label fw-semibold me-1">
-                  Is the patient the member?
-                </label>
-
-              
-                  <label class="me-2">
-                    <input
-                      type="radio"
-                      name="patientIsMember"
-                      value="yes"
-                      checked
-                    />
-                    Member
-                  </label>
-
-                  <label>
-                    <input
-                      type="radio"
-                      name="patientIsMember"
-                      value="no"
-                    />
-                    Dependent
-                  </label>
-              </div>
-              </div>
-            <div class="row g-2">
+    <div class="row g-4">
+      <!-- Part I -->
+      <div class="col-12">
+        <div class="family-planning-section mb-4 p-3 shadow-sm">
+          <div class="section-header d-flex justify-content-between align-items-center flex-column flex-md-row gap-3">
+            <div>
+              <h5 class="mb-0" style="color: #8E44AD"><i class="fa-solid fa-user me-2 text-muted"></i>Member Information</h5>
+            </div>
+            <div class="btn-toggle-group btn-group btn-group-sm" role="group" aria-label="Patient is member">
+              <input type="radio" class="btn-check" name="patientIsMember" id="patientIsMemberYes" value="yes" autocomplete="off" checked>
+              <label class="btn btn-outline-secondary rounded-pill" for="patientIsMemberYes">Member</label>
+              <input type="radio" class="btn-check" name="patientIsMember" id="patientIsMemberNo" value="no" autocomplete="off">
+              <label class="btn btn-outline-secondary rounded-pill" for="patientIsMemberNo">Dependent</label>
+            </div>
+          </div>
+          <div class="section-body">
+            <div class="row g-3">
               <div class="col-md-2">
                 <label class="form-label">PIN</label>
                 <input type="text" class="form-control form-control-sm rounded-0" name="pin" required />
@@ -145,7 +119,7 @@
                 </select>
               </div>
 
-                            <div class="col-md-6">
+              <div class="col-md-6">
                 <label class="form-label">
                   Contact Number
                 </label>
@@ -166,115 +140,106 @@
                 />
               </div>
             </div>
-            
-            
           </div>
+        </div>
+      </div>
+    </div>
 
-          <!-- Part II -->
-          <div id="dependentSection" class="d-none">
-          <div class="col-md-12">
-            <h5 class="my-1"><i class="fa-solid fa-diagram-predecessor me-2 text-muted"></i>Dependent Information</h5>
+    <!-- Part II -->
+    <div id="dependentSection" class="d-none">
+      <div class="family-planning-section mb-4 p-3 shadow-sm">
+        <div class="section-header">
+          <h5 class="mb-0" style="color: #8E44AD"><i class="fa-solid fa-diagram-predecessor me-2 text-muted"></i>Dependent Information</h5>
+        </div>
+        <div class="section-body">
+          <div class="row g-3">
+            <div class="col-md-2">
+              <label class="form-label">Dependent PIN</label>
+              <input type="text" class="form-control form-control-sm rounded-0" name="depPin" />
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Last Name</label>
+              <input
+                class="form-control form-control-sm rounded-0"
+                name="depLname"
+              />
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">First Name</label>
+              <input
+                class="form-control form-control-sm rounded-0"
+                name="depFname"
+              />
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Middle Name</label>
+              <input
+                class="form-control form-control-sm rounded-0"
+                name="depMname"
+              />
+            </div>
+
+            <div class="col-md-1">
+              <label class="form-label">Ext.</label>
+              <select class="form-select form-select-sm rounded-0" name="depExt">
+                <option value="">Ext</option>
+                <option>Jr.</option>
+                <option>Sr.</option>
+                <option>II</option>
+                <option>III</option>
+                <option>IV</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Sex</label>
+              <select class="form-select form-select-sm rounded-0" name="depSex">
+                <option>Male</option>
+                <option>Female</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">D.O.B</label>
+              <input type="date" class="form-control form-control-sm rounded-0" name="depDob" />
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Relationship to Member</label>
+              <select class="form-select form-select-sm rounded-0" name="relationship">
+                <option>Child</option>
+                <option>Parent</option>
+                <option>Spouse</option>
+              </select>
+            </div>
           </div>
-          <div class="row">
-          <div class="col-md-2">
-            <label class="form-label">Dependent PIN</label>
-            <input type="text" class="form-control form-control-sm rounded-0" name="depPin" />
-          </div>
-
-          <div class="col-md-3">
-            <label class="form-label">Last Name</label>
-            <input
-              class="form-control form-control-sm rounded-0"
-              name="depLname"
-            />
-          </div>
-
-          <div class="col-md-3">
-            <label class="form-label">First Name</label>
-            <input
-              class="form-control form-control-sm rounded-0"
-              name="depFname"
-            />
-          </div>
-
-          <div class="col-md-3">
-            <label class="form-label">Middle Name</label>
-            <input
-              class="form-control form-control-sm rounded-0"
-              name="depMname"
-            />
-          </div>
-
-          <div class="col-md-1">
-            <label class="form-label">Ext.</label>
-            <select class="form-select form-select-sm rounded-0" name="depExt">
-              <option value="">Ext</option>
-              <option>Jr.</option>
-              <option>Sr.</option>
-              <option>II</option>
-              <option>III</option>
-              <option>IV</option>
-            </select>
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label">Sex</label>
-            <select class="form-select form-select-sm rounded-0" name="depSex">
-              <option>Male</option>
-              <option>Female</option>
-            </select>
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label">D.O.B</label>
-            <input type="date" class="form-control form-control-sm rounded-0" name="depDob" />
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label">Relationship to Member</label>
-            <select class="form-select form-select-sm rounded-0" name="relationship">
-              <option>Child</option>
-              <option>Parent</option>
-              <option>Spouse</option>
-            </select>
-          </div>
-          </div>
-          </div>
+        </div>
+      </div>
+    </div>
 
 
-          <!-- Part III -->
-          <div class="col-12 ">
-            <h5 ><i class="fa-solid fa-signature me-2 text-muted"></i>Form Signee</h5>
-            <div class="row mb-1">
-                
-              <div class="col-md-3 pt-4">
-                  <input
-                    type="radio"
-                    id="radioMember"
-                    name="signee"
-        
-                    value="member"
-                    checked
-                  />
-                  <label class="form-check-label" for="radioMember">
-                    Member
-                  </label>
-    
-
-                  <input
-                    type="radio"
-                    id="radioRep"
-                    name="signee"
-
-                    value="representative"
-                  />
-                  <label class="form-check-label" for="radioRep">
-                    Representative
-                  </label>
+    <!-- Part III -->
+    <div class="col-12">
+      <div class="family-planning-section mb-4 p-3 shadow-sm">
+        <div class="section-header">
+          <h5 class="mb-0" style="color: #8E44AD"><i class="fa-solid fa-signature me-2 text-muted"></i>Form Signee</h5>
+        </div>
+        <div class="section-body">
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <div class="btn-toggle-group btn-group btn-group-sm" role="group" aria-label="Form signee">
+                <input type="radio" class="btn-check" id="radioMember" name="signee" value="member" autocomplete="off" checked>
+                <label class="btn btn-outline-secondary rounded-pill" for="radioMember">Member</label>
+                <input type="radio" class="btn-check" id="radioRep" name="signee" value="representative" autocomplete="off">
+                <label class="btn btn-outline-secondary rounded-pill" for="radioRep">Representative</label>
               </div>
-              <div id="representativeSection" class="col-md-8 d-none">
-        
-                <div class="row">
+            </div>
+          </div>
+          <div id="representativeSection" class="d-none">
+            <div class="row g-3">
               <div class="col-md-5">
                 <label class="form-label">Representative (Full Name)</label>
                 <input
@@ -284,7 +249,7 @@
               </div>
 
               <div class="col-md-3">
-                   <label class="form-label">Relationship</label>
+                <label class="form-label">Relationship</label>
                 <select class="form-select form-select-sm rounded-0" name="repRelationship">
                   <option value="">Relationship</option>
                   <option>Spouse</option>
@@ -303,47 +268,22 @@
                   <option>Others</option>
                 </select>
               </div>
-              </div>
             </div>
-</div>
           </div>
-            
         </div>
-     
-      </form>
-   <button
-              class="btn btn-light mt-3"
-              style="
-                background-color: #8E44AD;
-                border-color: #8E44AD;
-                color: #ffff;
-                font-weight: bold;
-              "
-              data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-toggle="modal"
-            >
-              Submit Claim Form
-        </button>
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-fullscreen">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
-  </div>
-</div>
-    </div>
-  </div>
+                        <button
+      class="btn btn-submit mt-3 w-100 w-md-auto p-2"
+      type="submit"
+    >
+      Submit Claim Form
+    </button>
+        </div>
 
+      </form>
+
+  </form>
 </div>
 <script>
   // Dependent Section Logic (Updated for Radio Buttons)

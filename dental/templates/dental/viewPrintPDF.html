@@ -1,14 +1,13 @@
-
 {% load humanize %}{% load static %}
-{% include 'animal_bite/header.html' %}
+{% include 'dental/header.html' %}
   <body>
     <div class="container modern-container mt-4">
-      <div class="card animal-bite-banner mb-4">
+      <div class="card dental-banner mb-4">
     <div class="card-body py-5 px-4">
       <div class="d-flex align-items-center justify-content-between gap-4 flex-column flex-md-row">
         <div>
           <h3 class="mb-2 fw-bold banner-title h3">
-            MHO Burauen Animal Bite Treatment Center
+            MHO Burauen Dental Center
           </h3>
           <div class="subtitle banner-subtitle">
             PhilHealth CF1 / CF2 / CSF Claim Form
@@ -16,7 +15,7 @@
         </div>
 
         <div class="banner-icon shadow-sm">
-          <i class="fa-solid fa-dog fa-2x"></i>
+          <i class="fa-solid fa-tooth fa-2x"></i>
         </div>
       </div>
     </div>
@@ -25,7 +24,7 @@
         <ul class="nav nav-pills" id="pdfTabNav"></ul>
         <button
           class="btn btn-back-modern"
-          onclick="window.location.href = '/animal_bite'"
+          onclick="window.location.href = '/dental'"
         >
           <i class="fa-solid fa-arrow-left me-1"></i> Back
         </button>
@@ -286,7 +285,7 @@
             <img
               src="{% static header.leftLogo %}"
               alt="Left logo"
-            /> 
+            />
             <h2 class="header-title">{{ header.title }}</h2>
             <img
               src="{% static header.rightLogo %}"

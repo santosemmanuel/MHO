@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('animal_bite/', include('animal_bite.urls')),
     path('dental/', include('dental.urls')),
-    path('familyPlanning/', include('family_planning.urls')),
+    path('family_planning/', include('family_planning.urls')),
 ]
 
 # Serve static files in development
