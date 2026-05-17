@@ -2,6 +2,7 @@ from django.template import loader
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.contrib import messages
 import json
 from .pdf_fillers import fill_cf1, fill_cf2, fill_csf, fill_soa
 from .pdf_utils import clean_files
@@ -134,13 +135,16 @@ def submit_form(request):
             fill_csf(data)
             # fill_soa(data)
         except Exception as e:
-            return HttpResponse(f'PDF generation error: {str(e)}', status=500)
+            messages.error(request, f'PDF generation error: {str(e)}')
+            return redirect('/family_planning/')
 
         request.session['family_planning_patient_data'] = data
+        messages.success(request, 'PDFs generated successfully. You may now view and download the files.')
 
         return redirect('/family_planning/view_print/')
     except Exception as e:
-        return HttpResponse(f'Unexpected error: {str(e)}', status=500)
+        messages.error(request, f'Unexpected error: {str(e)}')
+        return redirect('/family_planning/')
 
 
 def view_print(request):
@@ -149,6 +153,7 @@ def view_print(request):
     """
     patient = request.session.get('family_planning_patient_data', {})
     if not patient:
+        messages.warning(request, 'No submission found. Please submit the form before viewing PDFs.')
         return redirect('/family_planning/')
 
     pdf_dir = settings.BASE_DIR / 'family_planning' / 'static' / 'pdfs'

@@ -2,6 +2,7 @@ from django.template import loader
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.contrib import messages
 import json
 # from .pdf_fillers import fill_cf1, fill_cf2, fill_csf, fill_soa
 # from .pdf_utils import clean_files
@@ -137,10 +138,12 @@ def submit_form(request):
         #     return HttpResponse(f'PDF generation error: {str(e)}', status=500)
 
         request.session['dental_patient_data'] = data
+        messages.success(request, 'Form submitted successfully. You may now view the generated output.')
 
         return redirect('/dental/view_print/')
     except Exception as e:
-        return HttpResponse(f'Unexpected error: {str(e)}', status=500)
+        messages.error(request, f'Unexpected error: {str(e)}')
+        return redirect('/dental/')
 
 
 def view_print(request):
@@ -149,6 +152,7 @@ def view_print(request):
     """
     patient = request.session.get('dental_patient_data', {})
     if not patient:
+        messages.warning(request, 'No submission found. Please submit the form before viewing PDFs.')
         return redirect('/dental/')
 
     pdf_dir = settings.BASE_DIR / 'dental' / 'static' / 'pdfs'
