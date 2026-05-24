@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 import json
-# from .pdf_fillers import fill_cf1, fill_cf2, fill_csf, fill_soa
+from .pdf_fillers import fill_fff, fill_ccrf, fill_csf
 # from .pdf_utils import clean_files
 from pathlib import Path
 from django.conf import settings
@@ -129,13 +129,12 @@ def submit_form(request):
     try:
         data = _parse_form_data(request.POST)
 
-        # try:
-        #     fill_cf1(data)
-        #     fill_cf2(data)
-        #     fill_csf(data)
-        #     # fill_soa(data)
-        # except Exception as e:
-        #     return HttpResponse(f'PDF generation error: {str(e)}', status=500)
+        try:
+            fill_fff(data)
+            # fill_ccrf(data)
+            # fill_csf(data)
+        except Exception as e:
+            return HttpResponse(f'PDF generation error: {str(e)}', status=500)
 
         request.session['dental_patient_data'] = data
         messages.success(request, 'Form submitted successfully. You may now view the generated output.')
@@ -148,7 +147,7 @@ def submit_form(request):
 
 def view_print(request):
     """
-    View and download the generated PDFs with a Statement of Account tab.
+    View and download the generated PDFs.
     """
     patient = request.session.get('dental_patient_data', {})
     if not patient:
@@ -157,8 +156,8 @@ def view_print(request):
 
     pdf_dir = settings.BASE_DIR / 'dental' / 'static' / 'pdfs'
     pdf_file_order = [
-        ('output_cf1.pdf', 'CF-1 Form'),
-        ('output_cf2.pdf', 'CF-2 Form'),
+        ('output_fff.pdf', 'CF-1 Form'),
+        ('output_ccrf.pdf', 'CF-2 Form'),
         ('output_csf.pdf', 'CSF Form'),
     ]
     pdf_files = []
@@ -167,38 +166,39 @@ def view_print(request):
             if (pdf_dir / filename).exists():
                 pdf_files.append({'name': label, 'url': f'/static/pdfs/{filename}'})
 
-    statement_path = settings.BASE_DIR / 'dental' / 'static' / 'json' / 'statement-data.json'
-    statement = _load_json(statement_path)
+    # SOA/Statement of Account logic removed from dental PDF viewer.
+    # statement_path = settings.BASE_DIR / 'dental' / 'static' / 'json' / 'statement-data.json'
+    # statement = _load_json(statement_path)
 
-    if patient.get('dependent'):
-        dependent = patient.get('dependent', {})
-        patient_name = ' '.join(filter(None, [
-            dependent.get('depFname'),
-            dependent.get('depMname'),
-            dependent.get('depLname'),
-            dependent.get('depExt'),
-        ]))
-        patient_dob = calculate_age_month_days(dependent.get('depDob', ''))
-    else:
-        patient_name = ' '.join(filter(None, [
-            patient.get('firstName'),
-            patient.get('middleName'),
-            patient.get('lastName'),
-            patient.get('nameExt'),
-        ]))
-        patient_dob = calculate_age_month_days(patient.get('dob', ''))
+    # if patient.get('dependent'):
+    #     dependent = patient.get('dependent', {})
+    #     patient_name = ' '.join(filter(None, [
+    #         dependent.get('depFname'),
+    #         dependent.get('depMname'),
+    #         dependent.get('depLname'),
+    #         dependent.get('depExt'),
+    #     ]))
+    #     patient_dob = calculate_age_month_days(dependent.get('depDob', ''))
+    # else:
+    #     patient_name = ' '.join(filter(None, [
+    #         patient.get('firstName'),
+    #         patient.get('middleName'),
+    #         patient.get('lastName'),
+    #         patient.get('nameExt'),
+    #     ]))
+    #     patient_dob = calculate_age_month_days(patient.get('dob', ''))
 
-    patient_address = ' '.join(filter(None, [
-        patient.get('barangay'),
-        f"{patient.get('municipality', '')}, Leyte" if patient.get('municipality') else '',
-    ]))
+    # patient_address = ' '.join(filter(None, [
+    #     patient.get('barangay'),
+    #     f"{patient.get('municipality', '')}, Leyte" if patient.get('municipality') else '',
+    # ]))
 
-    statement['patientInfo']['left'][0]['value'] = patient_name
-    statement['patientInfo']['left'][1]['value'] = patient_address
-    statement['patientInfo']['right'][0]['value'] = patient_dob
-    statement['patientInfo']['right'][1]['value'] = format_datetime(patient.get('datetimeAdmitted', ''))
-    statement['patientInfo']['right'][2]['value'] = format_datetime(patient.get('datetimeDischarged', ''))
-    statement = _normalize_statement_info(statement)
+    # statement['patientInfo']['left'][0]['value'] = patient_name
+    # statement['patientInfo']['left'][1]['value'] = patient_address
+    # statement['patientInfo']['right'][0]['value'] = patient_dob
+    # statement['patientInfo']['right'][1]['value'] = format_datetime(patient.get('datetimeAdmitted', ''))
+    # statement['patientInfo']['right'][2]['value'] = format_datetime(patient.get('datetimeDischarged', ''))
+    # statement = _normalize_statement_info(statement)
 
     fee_summary = _load_json(settings.BASE_DIR / 'dental' / 'static' / 'json' / 'fee-summary.json')
     professional_fees = _load_json(settings.BASE_DIR / 'dental' / 'static' / 'json' / 'professional-fees.json')
@@ -212,8 +212,8 @@ def view_print(request):
 
     context = {
         'pdf_files': pdf_files,
-        'header': statement.get('header', {}),
-        'patient_info': statement.get('patientInfo', {}),
+        'header': {},
+        'patient_info': {},
         'fee_summary': fee_summary,
         'professional_fees': professional_fees,
         'itemized_charges': itemized_charges,
