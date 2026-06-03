@@ -66,11 +66,43 @@
     color: #ffffff;
     font-weight: 600;
     border-radius: 8px;
+    border: none;
 }
 
 .btn-submit:hover {
     background: var(--green-dark);
     color: #ffffff;
+}
+
+/* Override for dental page button */
+.dental-page .btn-submit,
+.dental-page .btn.btn-submit,
+button.btn-submit.btn[type="submit"],
+.dental-page button.btn-submit {
+    background: linear-gradient(135deg, #007bff, #0056b3) !important;
+    border: none !important;
+    color: #fff !important;
+    box-shadow: 0 12px 28px rgba(0, 123, 255, 0.18) !important;
+}
+
+.dental-page .btn-submit:hover,
+.dental-page .btn.btn-submit:hover,
+button.btn-submit.btn[type="submit"]:hover,
+.dental-page button.btn-submit:hover {
+    background: linear-gradient(135deg, #0056b3, #004085) !important;
+    color: #fff !important;
+}
+
+/* Additional Bootstrap override for dental button */
+.dental-page button[type="submit"].btn-submit {
+    background: linear-gradient(135deg, #007bff, #0056b3) !important;
+    border: none !important;
+    color: #fff !important;
+    box-shadow: 0 12px 28px rgba(0, 123, 255, 0.18) !important;
+}
+
+.dental-page button[type="submit"].btn-submit:hover {
+    background: linear-gradient(135deg, #0056b3, #004085) !important;
 }
 
         /* TOGGLE */
@@ -374,15 +406,31 @@
     color: #fff;
     border-color: #007bff;
 }
-.dental-page .btn-submit {
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    border: none;
-    color: #fff;
-    box-shadow: 0 12px 28px rgba(0, 123, 255, 0.18);
+
+/* Dental PDF Tab Button Styling */
+.dental-pdf-tab {
+    background: transparent !important;
+    border: 2px solid #007bff !important;
+    color: #007bff !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    padding: 0.5rem 1rem !important;
+    transition: all 0.3s ease !important;
+    margin-right: 0.5rem !important;
 }
-.dental-page .btn-submit:hover {
-    background: linear-gradient(135deg, #0056b3, #004085);
+
+.dental-pdf-tab:hover {
+    background: rgba(0, 123, 255, 0.1) !important;
+    color: #007bff !important;
 }
+
+.dental-pdf-tab.active {
+    background: linear-gradient(135deg, #007bff, #0056b3) !important;
+    border-color: #007bff !important;
+    color: #fff !important;
+    box-shadow: 0 8px 20px rgba(0, 123, 255, 0.25) !important;
+}
+
 @media (max-width: 767.98px) {
     .dental-banner {
         text-align: center;
@@ -507,6 +555,20 @@
     margin-left: 80px;
 }
 
+/* Dental Sidebar Styling */
+.dental-sidebar {
+    background: linear-gradient(180deg, #007bff 0%, #0056b3 100%) !important;
+}
+
+.dental-sidebar .sidebar-item:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-left-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.dental-sidebar .sidebar-item.active {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-left-color: #4da8ff !important;
+}
 
 /* Sidebar collapse animation */
 @media (max-width: 992px) {

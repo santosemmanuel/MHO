@@ -128,6 +128,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",  # Refers to a 'static' folder in your project root
     BASE_DIR / "animal_bite" / "static",  # App-specific static files including PDFs
+    BASE_DIR / "dental" / "static"  # App-specific static files for dental app
 ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'

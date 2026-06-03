@@ -156,15 +156,16 @@ def view_print(request):
 
     pdf_dir = settings.BASE_DIR / 'dental' / 'static' / 'pdfs'
     pdf_file_order = [
-        ('output_fff.pdf', 'CF-1 Form'),
-        ('output_ccrf.pdf', 'CF-2 Form'),
-        ('output_csf.pdf', 'CSF Form'),
+        ('output_fff.pdf', "CF-1 Form"),
+        ('output_fff.pdf', "CF-1 Form")
+        # ('output_ccrf.pdf', "CF-2 Form"),
+        # ('output_csf.pdf', "CSF Form"),
     ]
     pdf_files = []
     if pdf_dir.exists():
         for filename, label in pdf_file_order:
             if (pdf_dir / filename).exists():
-                pdf_files.append({'name': label, 'url': f'/static/pdfs/{filename}'})
+                pdf_files.append({"name": label, "url": f"/static/pdfs/{filename}"})
 
     # SOA/Statement of Account logic removed from dental PDF viewer.
     # statement_path = settings.BASE_DIR / 'dental' / 'static' / 'json' / 'statement-data.json'
@@ -200,28 +201,19 @@ def view_print(request):
     # statement['patientInfo']['right'][2]['value'] = format_datetime(patient.get('datetimeDischarged', ''))
     # statement = _normalize_statement_info(statement)
 
-    fee_summary = _load_json(settings.BASE_DIR / 'dental' / 'static' / 'json' / 'fee-summary.json')
-    professional_fees = _load_json(settings.BASE_DIR / 'dental' / 'static' / 'json' / 'professional-fees.json')
-    itemized_charges = _load_json(settings.BASE_DIR / 'dental' / 'static' / 'json' / 'itemized-charges.json')
+    # fee_summary = _load_json(settings.BASE_DIR / 'dental' / 'static' / 'json' / 'fee-summary.json')
+    # professional_fees = _load_json(settings.BASE_DIR / 'dental' / 'static' / 'json' / 'professional-fees.json')
+    # itemized_charges = _load_json(settings.BASE_DIR / 'dental' / 'static' / 'json' / 'itemized-charges.json')
 
-    total_amount = sum(row['amount'] for row in fee_summary)
-    total_discount = sum(row['discount'] for row in fee_summary)
-    philhealth_amount = sum(row['philhealth'] for row in fee_summary)
-    total_other_funding = sum(row['otherFunding'] for row in fee_summary)
-    total_balance = sum(row['balance'] for row in fee_summary)
+    # total_amount = sum(row['amount'] for row in fee_summary)
+    # total_discount = sum(row['discount'] for row in fee_summary)
+    # philhealth_amount = sum(row['philhealth'] for row in fee_summary)
+    # total_other_funding = sum(row['otherFunding'] for row in fee_summary)
+    # total_balance = sum(row['balance'] for row in fee_summary)
 
     context = {
         'pdf_files': pdf_files,
-        'header': {},
-        'patient_info': {},
-        'fee_summary': fee_summary,
-        'professional_fees': professional_fees,
-        'itemized_charges': itemized_charges,
-        'total_amount': total_amount,
-        'total_discount': total_discount,
-        'philhealth_amount': philhealth_amount,
-        'total_other_funding': total_other_funding,
-        'total_balance': total_balance,
+        'pdf_files_json': json.dumps(pdf_files),
     }
 
     template = loader.get_template('dental/viewPrintPDF.html')

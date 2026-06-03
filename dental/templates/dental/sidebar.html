@@ -1,0 +1,50 @@
+{% load static %}
+<aside id="sidebar" class="sidebar dental-sidebar">
+    <div class="sidebar-header">
+        <button id="sidebarToggle" class="sidebar-toggle" title="Toggle Sidebar">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="{% url 'dental:dashboard' %}" class="sidebar-item" title="Home">
+            <i class="fas fa-home"></i>
+            <span class="sidebar-label">Home</span>
+        </a>
+        <a href="{% url 'dental:view_print' %}"
+           class="sidebar-item"
+           title="Print Preview">
+            <i class="fas fa-print"></i>
+            <span class="sidebar-label">Print Preview</span>
+        </a>
+        <a href="{% url 'dental:dashboard' %}"
+           class="sidebar-item"
+           title="Claims Summary">
+            <i class="fas fa-file-lines"></i>
+            <span class="sidebar-label">Claims Summary</span>
+        </a>
+    </nav>
+</aside>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const body = document.body;
+    const sidebarPreference = localStorage.getItem('dentalSidebarCollapsed');
+
+    // Set initial state from localStorage
+    if (sidebarPreference === 'true') {
+      sidebar.classList.add('collapsed');
+      sidebarToggle.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    }
+
+    sidebarToggle.addEventListener('click', function (e) {
+      e.preventDefault();
+      sidebar.classList.toggle('collapsed');
+      const isCollapsed = sidebar.classList.contains('collapsed');
+      localStorage.setItem('dentalSidebarCollapsed', isCollapsed);
+
+      // Change icon direction
+      sidebarToggle.innerHTML = isCollapsed ? '<i class="fas fa-chevron-right"></i>' : '<i class="fas fa-chevron-left"></i>';
+    });
+  });
+</script>
