@@ -77,7 +77,6 @@
 /* Override for dental page button */
 .dental-page .btn-submit,
 .dental-page .btn.btn-submit,
-button.btn-submit.btn[type="submit"],
 .dental-page button.btn-submit {
     background: linear-gradient(135deg, #007bff, #0056b3) !important;
     border: none !important;
@@ -87,7 +86,6 @@ button.btn-submit.btn[type="submit"],
 
 .dental-page .btn-submit:hover,
 .dental-page .btn.btn-submit:hover,
-button.btn-submit.btn[type="submit"]:hover,
 .dental-page button.btn-submit:hover {
     background: linear-gradient(135deg, #0056b3, #004085) !important;
     color: #fff !important;
@@ -231,6 +229,7 @@ button.btn-submit.btn[type="submit"]:hover,
     background: #f8faf8;
     border-bottom: 1px solid rgba(15, 46, 34, 0.06);
 }
+
 .animal-bite-section .section-header h5 { margin-bottom: 0; font-size: 1rem; font-weight: 700; }
 .animal-bite-section .section-body { padding: 1.25rem; }
 .animal-bite-page .form-control,
@@ -240,11 +239,30 @@ button.btn-submit.btn[type="submit"]:hover,
     background: #ffffff;
     padding: 0.85rem 0.95rem;
 }
+
 .animal-bite-page .form-control:focus,
 .animal-bite-page .form-select:focus {
     border-color: var(--green-dark);
     box-shadow: 0 0 0 0.15rem rgba(0, 158, 96, 0.15) !important;
 }
+
+.animal-bite-page .btn-submit,
+.animal-bite-page .btn.btn-submit,
+.animal-bite-page button.btn-submit {
+    background: linear-gradient(135deg, #009e60, #0a8c56) !important;
+    border: none !important;
+    color: #fff !important;
+    box-shadow: 0 12px 28px rgba(0, 123, 255, 0.18) !important;
+}
+
+.animal-bite-page .btn-submit:hover,
+.animal-bite-page .btn.btn-submit:hover,
+.animal-bite-page button.btn-submit:hover {
+    background: linear-gradient(135deg, #0b7a4f, #0a6e48) !important;
+    color: #fff !important;
+}
+
+
 .form-label {
     font-size: 0.85rem;
     font-weight: 600;
@@ -258,7 +276,7 @@ button.btn-submit.btn[type="submit"]:hover,
     color: #fff;
     border-color: var(--green);
 }
-.btn-submit {
+/* .btn-submit {
     background: linear-gradient(135deg, #009e60, #0a8c56);
     border: none;
     color: #fff;
@@ -266,7 +284,7 @@ button.btn-submit.btn[type="submit"]:hover,
 }
 .btn-submit:hover {
     background: linear-gradient(135deg, #0b7a4f, #0a6e48);
-}
+} */
 @media (max-width: 767.98px) {
     .animal-bite-banner {
         text-align: center;

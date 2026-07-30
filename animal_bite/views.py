@@ -151,9 +151,9 @@ def view_print(request):
     View and download the generated PDFs with a Statement of Account tab.
     """
     patient = request.session.get('animal_bite_patient_data', {})
-    if not patient:
-        messages.warning(request, 'No submission found. Please submit the form before viewing PDFs.')
-        return redirect('/animal_bite/')
+    # if not patient:
+    #     messages.warning(request, 'No submission found. Please submit the form before viewing PDFs.')
+    #     return redirect('/animal_bite/')
 
     pdf_dir = settings.BASE_DIR / 'animal_bite' / 'static' / 'pdfs'
     pdf_file_order = [
