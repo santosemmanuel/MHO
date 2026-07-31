@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
+from animal_bite.models import PatientRecord
 import json
 from .pdf_fillers import fill_cf1, fill_cf2, fill_csf, fill_soa
 from .pdf_utils import clean_files
@@ -133,6 +134,18 @@ def submit_form(request):
             fill_cf2(data)
             fill_csf(data)
             # fill_soa(data)
+
+            PatientRecord.objects.create(
+                first_name="Juan",
+                middle_name="Dela",
+                last_name="Cruz",
+                name_ext="Jr.",
+                barangay="Poblacion",
+                pin="12-345678901-2",
+                membership="Direct Contributor",
+                day_0=date(2026, 1, 15)
+            )
+
         except Exception as e:
             messages.error(request, f'PDF generation error: {str(e)}')
             return redirect('/animal_bite/')
