@@ -127,6 +127,7 @@ def submit_form(request):
     Handle form submission and generate PDFs, then redirect to the PDF viewer page.
     """
     try:
+        today = date.today()
         data = _parse_form_data(request.POST)
 
         try:
@@ -135,15 +136,30 @@ def submit_form(request):
             fill_csf(data)
             # fill_soa(data)
 
+            pin = data['pin']
+            membership = "Member"
+            firstName = data['firstName']
+            lastName = data['lastName']
+            middleName = data['middleName']
+            nameExt = data['nameExt']
+
+            if data['patientIsMember'] == 'no':
+                pin = data['dependent']['depPin']
+                membership = "Dependent"
+                firstName = data['dependent']['depFname']
+                lastName = data['dependent']['depLname']
+                middleName = data['dependent']['depMname']
+                nameExt = data['dependent']['depExt']
+
             PatientRecord.objects.create(
-                first_name="Juan",
-                middle_name="Dela",
-                last_name="Cruz",
-                name_ext="Jr.",
-                barangay="Poblacion",
-                pin="12-345678901-2",
-                membership="Direct Contributor",
-                day_0=date(2026, 1, 15)
+                first_name=firstName,
+                middle_name=middleName,
+                last_name=lastName,
+                name_ext=nameExt,
+                barangay=data['barangay'],
+                pin=pin,
+                membership=membership,
+                day_0=today
             )
 
         except Exception as e:

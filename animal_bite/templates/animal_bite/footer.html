@@ -1,28 +1,29 @@
-    {% load static %}
-    </main>
-
-    <!-- Footer -->
-    <!-- <footer>
+{% load static %}
+</main>
+<!-- Footer -->
+<!-- <footer>
       <div class="container">
         <hr class="bg-white-50" />
         <div class="text-center">
           <p>&copy; 2026 Animal Bite Management System. All rights reserved.</p>
         </div>
       </div>
-    </footer> -->
-
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/toastr.min.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{% static 'js/alerts.js' %}"></script>
-    {% if messages %}
-      <script>
+</footer> -->
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/toastr.min.js' %}"></script>
+<script src="https://cdn.datatables.net/3.0.1/js/dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/3.0.1/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'js/alerts.js' %}"></script>
+{% if messages %}
+  <script>
         document.addEventListener('DOMContentLoaded', function () {
           {% for message in messages %}
             showMessage('{{ message.tags|default:'info' }}', '{{ message|escapejs }}');
           {% endfor %}
         });
-      </script>
-    {% endif %}
-  </body>
+  </script>
+{% endif %}
+<script>new DataTable('#example');</script>
+</body>
 </html>
