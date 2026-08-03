@@ -9,7 +9,12 @@ from .pdf_fillers import fill_cf1, fill_cf2, fill_csf, fill_soa
 from .pdf_utils import clean_files
 from pathlib import Path
 from django.conf import settings
-from datetime import date, datetime, timedelta
+import datetime
+from django.utils.timezone import localdate
+
+today = localdate()
+start_of_today = datetime.datetime.combine(today, datetime.time.min)
+end_of_today = datetime.datetime.combine(today, datetime.time.max)
 
 # Create your views here.
 
@@ -328,3 +333,36 @@ def download_pdf(request, filename):
     except Exception as e:
         return HttpResponse(f'Error downloading file: {str(e)}', status=500)
 
+
+def get_patient_records(request): # Assuming this is your view function name
+    """
+    Retrieve all patient records from the database and return them as a JsonResponse.
+    """
+    date_str = request.GET.get('date')
+    if date_str:
+        try:
+            date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
+            records = PatientRecord.objects.filter(DateandTime=date_obj)
+        except ValueError:
+            records = PatientRecord.objects.none()
+    else:
+        records = PatientRecord.objects.all()
+
+    record_list = []
+    
+    for record in records:
+        record_list.append({
+            'id': record.id,
+            'first_name': record.first_name,
+            'middle_name': record.middle_name,
+            'last_name': record.last_name,
+            'name_ext': record.name_ext,
+            'barangay': record.barangay,
+            'pin': record.pin,
+            'membership': record.membership,
+            'day_0': record.day_0.isoformat() if record.day_0 else None,
+            'date_and_time': record.date_and_time.isoformat() if record.date_and_time else None,
+        })
+    
+    # 2. Wrap the list in JsonResponse and set safe=False
+    return JsonResponse(record_list, safe=False) 

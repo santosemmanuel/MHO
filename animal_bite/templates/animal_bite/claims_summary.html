@@ -175,5 +175,13 @@
     </div>
   {% endif %}
 </div>
+<script>
+  fetch("{% url 'animal_bite:patient_records' %}")
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => console.error("Error loading JSON:", error));
+</script>
 
 {% include 'animal_bite/footer.html' %}

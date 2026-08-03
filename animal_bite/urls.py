@@ -10,4 +10,5 @@ urlpatterns = [
     path('view_print/', views.view_print, name='view_print'),
     path('download/<str:filename>/', views.download_pdf, name='download_pdf'),
     path('claims_summary/', views.claims_summary, name='claims_summary'),
+    path('patient_records/', views.get_patient_records, name='patient_records'),
 ]
