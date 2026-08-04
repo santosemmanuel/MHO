@@ -10,6 +10,7 @@ from .pdf_utils import clean_files
 from pathlib import Path
 from django.conf import settings
 import datetime
+from datetime import date
 from django.utils.timezone import localdate
 
 today = localdate()
@@ -27,7 +28,7 @@ def calculate_age(dob_str):
     if not dob_str:
         return 0
     try:
-        birth_date = datetime.strptime(dob_str, '%Y-%m-%d').date()
+        birth_date = datetime.datetime.strptime(dob_str, '%Y-%m-%d').date()
     except ValueError:
         return 0
 
@@ -38,7 +39,7 @@ def calculate_age_month_days(dob_str):
     if not dob_str:
         return ''
     try:
-        birth_date = datetime.strptime(dob_str, '%Y-%m-%d').date()
+        birth_date = datetime.datetime.strptime(dob_str, '%Y-%m-%d').date()
     except ValueError:
         return ''
 
@@ -61,7 +62,7 @@ def format_datetime(value):
     if not value:
         return ''
     try:
-        parsed = datetime.fromisoformat(value)
+        parsed = datetime.datetime.fromisoformat(value)
         return parsed.strftime('%b %d, %Y %H:%M')
     except ValueError:
         return str(value)
