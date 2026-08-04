@@ -383,3 +383,28 @@ def get_patient_records(request): # Assuming this is your view function name
     
     # 2. Wrap the list in JsonResponse and set safe=False
     return JsonResponse(record_list, safe=False) 
+
+def get_patient_noPIN(request):
+    """
+    Retrieve patient records without a PIN from the database and return them as a JsonResponse.
+    """
+    record_count = PatientRecord.objects.filter(pin__isnull=True) | PatientRecord.objects.filter(pin='000000000000') | PatientRecord.objects.filter(pin='').count()
+    
+    return JsonResponse({'count': record_count}, safe=False)
+
+def get_dependent_patients(request):
+    """
+    Retrieve dependent patient records from the database and return them as a JsonResponse.
+    """
+    record_count = PatientRecord.objects.filter(membership='Dependent').count()
+
+    return JsonResponse({'count': record_count}, safe=False)
+
+def get_member_patients(request):
+    """
+    Retrieve member patient records from the database and return them as a JsonResponse.
+    """
+    record_count = PatientRecord.objects.filter(membership='Member').count()
+
+    return JsonResponse({'count': record_count}, safe=False)
+         
