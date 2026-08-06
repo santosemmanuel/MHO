@@ -402,6 +402,8 @@ fetch("{% url 'animal_bite:patient_records' %}")
 
             tbody.insertAdjacentHTML('beforeend', row);
         });
+
+      new DataTable('#example');
   })
   .catch((error) => console.error("Error loading JSON:", error));
 

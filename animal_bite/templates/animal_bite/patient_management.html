@@ -1,0 +1,565 @@
+{% load static %}
+{% include 'animal_bite/header.html' %}
+<div class="container-xl animal-bite-page my-5">
+    <div class="card animal-bite-banner mb-4">
+        <div class="card-body py-5 px-4">
+            <div class="d-flex align-items-center justify-content-between gap-4 flex-column flex-md-row">
+                <div>
+                    <h3 class="mb-2 fw-bold banner-title">
+                        <i class="fa-solid fa-file-chart-line me-2"></i>Patient Management Section
+                    </h3>
+                    <div class="subtitle banner-subtitle">Animal Bite Management System - Patient Overview</div>
+                </div>
+                <div class="banner-icon shadow-sm">
+                    <i class="fa-solid fa-chart-bar fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted">Total Patients</small>
+                        <h2 class="fw-bold text-success mb-0" id="totalPatients">0</h2>
+                    </div>
+                    <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                        <i class="fa-solid fa-users fa-xl text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted">Member Patients</small>
+                        <h2 class="fw-bold text-primary mb-0" id="memberPatients">0</h2>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                        <i class="fa-solid fa-user fa-xl text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted">Dependent Patients</small>
+                        <h2 class="fw-bold text-warning mb-0" id="dependentPatients">0</h2>
+                    </div>
+                    <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+                        <i class="fa-solid fa-child fa-xl text-warning"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted">Patients with no PIN</small>
+                        <h2 class="fw-bold text-danger mb-0" id="patientNoPIN">0</h2>
+                    </div>
+                    <div class="bg-danger bg-opacity-10 rounded-circle p-3">
+                        <i class="fa-solid fa-ban fa-xl text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Filters -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Year</label>
+                        <select class="form-select" id="yearFilter">
+                            <option value="">All Years</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Month</label>
+                        <select class="form-select" id="monthFilter">
+                            <option value="">All Months</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Barangay</label>
+                        <select class="form-select" id="barangayFilter">
+                            <option value="">All Barangays</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button class="btn btn-submit w-100">
+                            <i class="fa-solid fa-filter me-2"></i>
+                            Apply Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Charts -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-white">
+                        <strong>Monthly Claims</strong>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="monthlyChart" height="120"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-white">
+                        <strong>Claim Status</strong>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Recent Claims -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white d-flex justify-content-between">
+                <strong>
+                    <i class="fa-solid fa-table me-2"></i>
+                    Recent Claims
+                </strong>
+                <button id="printSummaryBtn" class="btn btn-submit btn-sm">
+                    <i class="fa-solid fa-print me-2"></i>
+                    Print Summary
+                </button>
+            </div>
+            <div class="card-body">
+                <table id="example" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%">PIN</th>
+                            <th style="width: 30%">Name</th>
+                            <th>Membership</th>
+                            <th>Barangay</th>
+                            <th>Day 0</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="claimsSummaryReport" style="display: none;">
+            <table style="width:100%; border:0; border-collapse:collapse;">
+                <tr>
+                    <!-- Logo -->
+                    <td style="width:90px; text-align:left; vertical-align:top;">
+                        <img src="{% static 'img/philhealth_Logo.png' %}"
+                             alt="PhilHealth Logo"
+                             style="width:110px;
+                                    height:110px">
+                    </td>
+                    <!-- Header -->
+                    <td style="text-align:center;">
+                        <div style="font-size:11px;">Republic of the Philippines</div>
+                        <div style="font-size:11px; font-weight:bold;">PHILIPPINE HEALTH INSURANCE CORPORATION</div>
+                        <div style="font-size:11px;">City State Centre, 709 Shaw Boulevard, Pasig City</div>
+                        <div style="font-size:11px;">
+                            Call Center (02) 441-7442 &nbsp;&nbsp;&nbsp;
+                            Trunkline (02) 441-7444
+                        </div>
+                        <div style="font-size:11px;">email: actioncenter@philhealth.gov.ph</div>
+                    </td>
+                    <!-- Empty cell to balance the logo -->
+                    <td style="width:90px;"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="height:20px;"></td>
+                </tr>
+                <tr>
+                    <td colspan="3"
+                        style="text-align:center;
+                               font-size:21px;
+                               font-weight:bold">CLAIMS SUMMARY REPORT for ANIMAL BITES</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="height:20px;"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="font-size:15px;">
+                        <strong>Facility:</strong>
+                        <u>BURAUEN MUNICIPAL HEALTH OFFICE ANIMAL BITE TREATMENT CENTER</u>
+                        <span style="float:right;">
+                            <strong>Provider Code:</strong> ________________________
+                        </span>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <table class="report">
+                <tr>
+                    <th rowspan="3" style="width:10px;"></th>
+                    <th rowspan="2" style="width:200px;">Patient Name</th>
+                    <th rowspan="3" style="width:70px;">Membership</th>
+                    <th rowspan="3" style="width:160px;">PhilHealth Identification Number (PIN) of Member</th>
+                    <th rowspan="3" style="width:100px;">Diagnosis (ICD Code)</th>
+                    <th colspan="4">Immunization Schedule (mm/dd/yyyy)</th>
+                    <th rowspan="3" style="width:110px;">
+                        Member's Signature
+                        <br>
+                        (for Authorized Signatory)
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="3">Anti-Rabies Vaccine</th>
+                    <th rowspan="2"  style="width:50px;">RIG</th>
+                </tr>
+                <tr>
+                    <th>(Last Name, First Name, M.I.)</th>
+                    <th style="width:50px;">Day 0</th>
+                    <th style="width:50px;">Day 3</th>
+                    <th style="width:50px;">Day 7</th>
+                </tr>
+            </table>
+            <br>
+            <br>
+            <table style="width:100%; border-collapse:collapse;">
+                <tr>
+                    <td style="border:none; font-size:12px;">
+                        <strong>Based on the PhilHealth Circular No. ____, 2013</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="height:20px; border:none;"></td>
+                </tr>
+                <tr>
+                    <td style="border:none; font-size:12px;">
+                        I certify that services rendered were recorded in the patient's treatment
+                        records and that the herein information given are true and correct.
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:none; font-size:12px;">
+                        The foregoing items and charges are in compliance with the applicable
+                        laws, rules, and regulations.
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <br>
+            <br>
+            <table style="width:100%; border-collapse:collapse;">
+                <tr>
+                    <td style="width:50%; border:none; font-size: 14px;">
+                        <strong>Prepared by:</strong>
+                    </td>
+                    <td style="width:50%; border:none; text-align:left; font-size: 14px">
+                        <strong>Approved by:</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="height:60px; border:none;"></td>
+                    <td style="border:none;"></td>
+                </tr>
+                <tr>
+                    <td style="border:none; text-align:center; font-size: 15px;">
+                        <strong>KEVIN REY C. MAGSAMBOL, RN</strong>
+                    </td>
+                    <td style="border:none; text-align:center; font-size: 15px;">
+                        <strong>MA. QUEENA JOVE Q. SERRANO, MD</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:none; text-align:center; font-size: 14px;">PRINTED NAME &amp; SIGNATURE (Authorized Signatory)</td>
+                    <td style="border:none; text-align:center; font-size: 14px;">HEAD OF FACILITY</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script>
+     let leyteBrgy = {};
+      fetch("{% static 'data/barangays.json' %}")
+        .then((response) => response.json())
+        .then((data) => {
+            leyteBrgy = data;
+            const barangaySelect = document.getElementById("barangayFilter");
+            barangaySelect.innerHTML =
+              '<option value="">-- Select Barangay --</option>';
+            const filterBrgy = leyteBrgy.filter(
+              (item) => item.citymun === "Burauen",
+            );
+
+            filterBrgy.forEach((brgy) => {
+              const option = document.createElement("option");
+              option.value = brgy.name;
+              option.text = brgy.name;
+              barangaySelect.appendChild(option);
+          })})
+        .catch((error) => console.error("Error loading JSON:", error));
+      
+        document.addEventListener('DOMContentLoaded', () => {
+            const yearSelect = document.getElementById('yearFilter');
+            const monthSelect = document.getElementById('monthFilter');
+
+            // --- 1. POPULATE YEARS ---
+            const currentYear = new Date().getFullYear();
+            const earliestYear = 1900; // Set your desired past year limit here
+
+            for (let year = currentYear; year >= earliestYear; year--) {
+              const option = document.createElement('option');
+              option.value = year;
+              option.textContent = year;
+              yearSelect.appendChild(option);
+            }
+
+            // --- 2. POPULATE MONTHS ---
+            const months = [
+              'January', 'February', 'March', 'April', 
+              'May', 'June', 'July', 'August', 
+              'September', 'October', 'November', 'December'
+            ];
+
+            months.forEach((month, index) => {
+              const option = document.createElement('option');
+              // Store 1-based month numbers (1 = Jan, 12 = Dec)
+              option.value = index + 1; 
+              option.textContent = month;
+              monthSelect.appendChild(option);
+            });
+        });
+         
+
+fetch("{% url 'animal_bite:patient_records' %}")
+  .then((response) => response.json())
+  .then((data) => {
+    const totalPatients = data.length;
+    const memberPatients = data.filter((patient) => patient.membership === "Member").length;
+    const dependentPatients = data.filter((patient) => patient.membership === "Dependent").length;
+    const patientNoPIN = data.filter((patient) => !patient.pin || patient.pin === "000000000000" || patient.pin === "").length;
+
+    document.getElementById("totalPatients").textContent = totalPatients;
+    document.getElementById("memberPatients").textContent = memberPatients;
+    document.getElementById("dependentPatients").textContent = dependentPatients;
+    document.getElementById("patientNoPIN").textContent = patientNoPIN;
+  })
+  .catch((error) => console.error("Error loading JSON:", error));
+    </script>
+    <script>
+ fetch("{% url 'animal_bite:patient_records' %}")
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+
+    const table = document.querySelector(".report");
+
+    data.forEach((patient, index) => {
+      const tr = document.createElement("tr");
+
+      // Format date if available
+      const day0 = patient.day_0
+        ? new Date(patient.day_0).toLocaleDateString("en-US")
+        : "";
+
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td>
+          ${patient.last_name}, ${patient.first_name},
+          ${patient.middle_name ? patient.middle_name.charAt(0) + "." : ""}
+          ${patient.name_ext || ""}
+        </td>
+        <td style='text-align:center'>${patient.membership === "Member" ? "M" : "D"}</td>
+        <td>${patient.pin || ""}</td>
+        <td style='text-align:center'>T14.1; W55</td>
+        <td>${day0}</td>
+        <td>\t\t\t\t</td>
+        <td>\t\t\t\t</td>
+        <td></td>
+        <td></td>
+      `;
+
+      table.appendChild(tr);
+    });
+
+    const tbody = document.querySelector('#example tbody');
+    tbody.innerHTML = '';
+
+        data.forEach(item => {
+            const row = `
+                <tr>
+                    <td>${item.pin}</td>
+                    <td>
+                      ${item.last_name}, ${item.first_name},
+                      ${item.middle_name ? item.middle_name : ""}
+                      ${item.name_ext || ""}
+                    </td>
+                    <td>${item.membership}</td>
+                    <td>${item.barangay}</td>
+                    <td>${item.day_0}</td>
+                </tr>
+            `;
+
+            tbody.insertAdjacentHTML('beforeend', row);
+        });
+
+      new DataTable('#example');
+  })
+  .catch((error) => console.error("Error loading JSON:", error));
+
+      
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+document.getElementById("printSummaryBtn").addEventListener("click", function () {
+
+    const reportHTML = document.getElementById("claimsSummaryReport").innerHTML;
+
+    const printWindow = window.open("", "_blank");
+
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Claims Summary Report</title>
+
+            <style>
+                body{
+                    font-family: Arial, sans-serif;
+                    margin:20px;
+                }
+
+                table{
+                    width:100%;
+                    border-collapse:collapse;
+                }
+
+                .report th, .report td{
+                    border:1px solid #000;
+                    padding:4px;
+                    font-size:12px;
+                }
+
+                @page{
+                    size:A4 landscape;
+                    margin:10mm;
+                }
+</style>
+        </head>
+        <body>
+            ${reportHTML}
+        </body>
+        </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    // printWindow.close();
+
+});
+    </script>
+    <script>
+let monthlyChart;
+let statusChart;
+
+fetch("{% url 'animal_bite:patient_records' %}")
+.then(response => response.json())
+.then(data => {
+
+    console.log(data);
+
+    // Dashboard cards
+    document.getElementById("totalPatients").innerHTML = data.length;
+
+    //   Monthly Chart
+    monthlyChart = new Chart(document.getElementById('monthlyChart'),{
+
+        type:'bar',
+
+        data:{
+
+            labels:[
+                'Jan','Feb','Mar','Apr','May','Jun',
+                'Jul','Aug','Sep','Oct','Nov','Dec'
+            ],
+
+            datasets:[{
+
+                label:'Claims',
+
+                data:[
+                    12,19,8,15,20,16,
+                    25,0,0,0,0,0
+                ],
+
+                backgroundColor:'#198754',
+                borderRadius:8
+
+            }]
+        },
+
+        options:{
+            responsive:true,
+            plugins:{
+                legend:{
+                    display:false
+                }
+            }
+        }
+
+    });
+
+    // Doughnut Chart
+    statusChart = new Chart(document.getElementById('statusChart'),{
+
+        type:'doughnut',
+
+        data:{
+
+            labels:[
+                'Approved',
+                'Pending',
+                'Denied'
+            ],
+
+            datasets:[{
+
+                data:[
+                    50,
+                    20,
+                    10
+                ],
+
+                backgroundColor:[
+                    '#198754',
+                    '#ffc107',
+                    '#dc3545'
+                ]
+
+            }]
+
+        },
+
+        options:{
+
+            responsive:true,
+
+            plugins:{
+
+                legend:{
+                    position:'bottom'
+                }
+
+            }
+
+        }
+
+    });
+
+})
+.catch(error=>console.log(error));
+
+
+
+    </script>
+    {% include 'animal_bite/footer.html' %}

@@ -407,4 +407,12 @@ def get_member_patients(request):
     record_count = PatientRecord.objects.filter(membership='Member').count()
 
     return JsonResponse({'count': record_count}, safe=False)
-         
+
+
+def patient_management(request):
+    """
+    Render the patient management page.
+    """
+    template = loader.get_template('animal_bite/patient_management.html')
+    context = {}
+    return HttpResponse(template.render(context, request))       

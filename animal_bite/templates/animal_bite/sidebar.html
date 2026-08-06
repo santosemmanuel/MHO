@@ -5,25 +5,33 @@
       <i class="fas fa-chevron-left"></i>
     </button>
   </div>
-
   <nav class="sidebar-nav">
-    <a href="{% url 'animal_bite:dashboard' %}" class="sidebar-item" title="Home">
+    <a href="{% url 'animal_bite:dashboard' %}"
+       class="sidebar-item"
+       title="Home">
       <i class="fas fa-home"></i>
       <span class="sidebar-label">Home</span>
     </a>
-
-    <a href="{% url 'animal_bite:view_print' %}" class="sidebar-item" title="Print Preview">
+    <a href="{% url 'animal_bite:view_print' %}"
+       class="sidebar-item"
+       title="Print Preview">
       <i class="fas fa-print"></i>
       <span class="sidebar-label">Print Preview</span>
     </a>
-
-    <a href="{% url 'animal_bite:claims_summary' %}" class="sidebar-item" title="Claims Summary">
+    <a href="{% url 'animal_bite:patient_management' %}"
+       class="sidebar-item"
+       title="Patient Management">
+      <i class="fas fa-user-injured"></i>
+      <span class="sidebar-label">Patient Management</span>
+    </a>
+    <a href="{% url 'animal_bite:claims_summary' %}"
+       class="sidebar-item"
+       title="Claims Summary">
       <i class="fas fa-file-lines"></i>
       <span class="sidebar-label">Claims Summary</span>
     </a>
   </nav>
 </aside>
-
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.getElementById('sidebar');
