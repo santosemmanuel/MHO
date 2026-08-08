@@ -74,16 +74,12 @@
       <div class="card-body">
         <div class="row g-3">
           <div class="col-md-3">
-            <label class="form-label">Year</label>
-            <select class="form-select" id="yearFilter">
-              <option value="">All Years</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Month</label>
-            <select class="form-select" id="monthFilter">
-              <option value="">All Months</option>
-            </select>
+            <label class="form-label">Date</label>
+            <input type="date"
+                   class="form-control"
+                   id="dateFilter"
+                   value="{{ today|date:'Y-m-d' }}"
+                   name="dateFilter">
           </div>
           <div class="col-md-3">
             <label class="form-label">Barangay</label>
@@ -92,7 +88,7 @@
             </select>
           </div>
           <div class="col-md-3 d-flex align-items-end">
-            <button class="btn btn-submit w-100">
+            <button class="btn btn-submit w-100" id="applyFilterBtn">
               <i class="fa-solid fa-filter me-2"></i>
               Apply Filter
             </button>
@@ -298,92 +294,47 @@
               barangaySelect.appendChild(option);
           })})
         .catch((error) => console.error("Error loading JSON:", error));
-      
-        document.addEventListener('DOMContentLoaded', () => {
-            const yearSelect = document.getElementById('yearFilter');
-            const monthSelect = document.getElementById('monthFilter');
-
-            // --- 1. POPULATE YEARS ---
-            const currentYear = new Date().getFullYear();
-            const earliestYear = 1900; // Set your desired past year limit here
-
-            for (let year = currentYear; year >= earliestYear; year--) {
-              const option = document.createElement('option');
-              option.value = year;
-              option.textContent = year;
-              yearSelect.appendChild(option);
-            }
-
-            // --- 2. POPULATE MONTHS ---
-            const months = [
-              'January', 'February', 'March', 'April', 
-              'May', 'June', 'July', 'August', 
-              'September', 'October', 'November', 'December'
-            ];
-
-            months.forEach((month, index) => {
-              const option = document.createElement('option');
-              // Store 1-based month numbers (1 = Jan, 12 = Dec)
-              option.value = index + 1; 
-              option.textContent = month;
-              monthSelect.appendChild(option);
-            });
-        });
          
-
-fetch("{% url 'animal_bite:patient_records' %}")
-  .then((response) => response.json())
-  .then((data) => {
-    const totalPatients = data.length;
-    const memberPatients = data.filter((patient) => patient.membership === "Member").length;
-    const dependentPatients = data.filter((patient) => patient.membership === "Dependent").length;
-    const patientNoPIN = data.filter((patient) => !patient.pin || patient.pin === "000000000000" || patient.pin === "").length;
-
-    document.getElementById("totalPatients").textContent = totalPatients;
-    document.getElementById("memberPatients").textContent = memberPatients;
-    document.getElementById("dependentPatients").textContent = dependentPatients;
-    document.getElementById("patientNoPIN").textContent = patientNoPIN;
-  })
-  .catch((error) => console.error("Error loading JSON:", error));
   </script>
   <script>
- fetch("{% url 'animal_bite:patient_records' %}")
-  .then((response) => response.json())
-  .then((data) => {
-    console.log(data);
+  function loadPatientRecords(date) {
+    fetch(`{% url 'animal_bite:patient_records' %}?date=${encodeURIComponent(date)}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
 
-    const table = document.querySelector(".report");
+        const table = document.querySelector(".report");
 
-    data.forEach((patient, index) => {
-      const tr = document.createElement("tr");
+        data.forEach((patient, index) => {
+          const tr = document.createElement("tr");
 
-      // Format date if available
-      const day0 = patient.day_0
-        ? new Date(patient.day_0).toLocaleDateString("en-US")
-        : "";
+          // Format date if available
+          const day0 = patient.day_0
+            ? new Date(patient.day_0).toLocaleDateString("en-US")
+            : "";
 
-      tr.innerHTML = `
-        <td>${index + 1}</td>
-        <td>
-          ${patient.last_name}, ${patient.first_name},
-          ${patient.middle_name ? patient.middle_name.charAt(0) + "." : ""}
-          ${patient.name_ext || ""}
-        </td>
-        <td style='text-align:center'>${patient.membership === "Member" ? "M" : "D"}</td>
-        <td>${patient.pin || ""}</td>
-        <td style='text-align:center'>T14.1; W55</td>
-        <td>${day0}</td>
-        <td>\t\t\t\t</td>
-        <td>\t\t\t\t</td>
-        <td></td>
-        <td></td>
-      `;
+          tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td>
+              ${patient.last_name}, ${patient.first_name},
+              ${patient.middle_name ? patient.middle_name.charAt(0) + "." : ""}
+              ${patient.name_ext || ""}
+            </td>
+            <td style='text-align:center'>${patient.membership === "Member" ? "M" : "D"}</td>
+            <td>${patient.pin || ""}</td>
+            <td style='text-align:center'>T14.1; W55</td>
+            <td>${day0}</td>
+            <td>\t\t\t\t</td>
+            <td>\t\t\t\t</td>
+            <td></td>
+            <td></td>
+          `;
 
-      table.appendChild(tr);
-    });
+          table.appendChild(tr);
+        });
 
-    const tbody = document.querySelector('#example tbody');
-    tbody.innerHTML = '';
+        const tbody = document.querySelector('#example tbody');
+        tbody.innerHTML = '';
 
         data.forEach(item => {
             const row = `
@@ -403,11 +354,50 @@ fetch("{% url 'animal_bite:patient_records' %}")
             tbody.insertAdjacentHTML('beforeend', row);
         });
 
-      new DataTable('#example');
-  })
-  .catch((error) => console.error("Error loading JSON:", error));
+        const totalPatients = data.length;
+        const memberPatients = data.filter((patient) => patient.membership === "Member").length;
+        const dependentPatients = data.filter((patient) => patient.membership === "Dependent").length;
+        const patientNoPIN = data.filter((patient) => !patient.pin || patient.pin === "000000000000" || patient.pin === "").length;
 
-      
+        document.getElementById("totalPatients").textContent = totalPatients;
+        document.getElementById("memberPatients").textContent = memberPatients;
+        document.getElementById("dependentPatients").textContent = dependentPatients;
+        document.getElementById("patientNoPIN").textContent = patientNoPIN;
+
+        new DataTable('#example');
+      })
+      .catch((error) => console.error("Error loading JSON:", error));
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+
+    const dateInput = document.getElementById('dateFilter');
+
+    // Get today's date
+    const today = new Date();
+
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+
+    const todayString = `${year}-${month}-${day}`;
+
+    // Set date input
+    dateInput.value = todayString;
+
+    // Load today's records
+    loadPatientRecords(todayString);
+  });
+
+  document.getElementById('applyFilterBtn').addEventListener('click', function () {
+    const selectedDate = document.getElementById('dateFilter').value;
+
+    if (!selectedDate) {
+        table.clear().draw();
+        return;
+    }
+    
+    loadPatientRecords(selectedDate);
+  });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>

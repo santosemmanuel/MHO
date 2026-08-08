@@ -59,7 +59,8 @@ def fill_cf1(data):
 
         memberMiddleI = data.get('middleName', '')
         memberPrintedName = f"{data.get('firstName', '').upper()} {memberMiddleI[0].upper() + '.' if memberMiddleI else ''} {data.get('lastName', '').upper()} {data.get('nameExt', '')}".strip()
-        memberSignDate = [f"{today.month:02}", f"{today.day:02}", today.year]
+        # memberSignDate = [f"{today.month:02}", f"{today.day:02}", today.year]
+        memberSignDate = [None, None, None]
         repSignDate = ["", "", ""]
 
         if data.get('signee', '').lower() == "representative":
@@ -308,7 +309,8 @@ def fill_csf(data):
     signMember = "Yes_ltey"
     memberMiddleI = data.get('middleName', '')
     memberPrintedName = f"{data.get('firstName', '').upper()} {memberMiddleI[0].upper() + '.' if memberMiddleI else ''} {data.get('lastName', '').upper()} {data.get('nameExt', '')}".strip()
-    memberSignDate = [f"{get_today().month:02}", f"{get_today().day:02}", get_today().year]
+    # memberSignDate = [f"{get_today().month:02}", f"{get_today().day:02}", get_today().year]
+    memberSignDate = [None, None, None]
     repSignDate = ["", "", ""]
     consentName = memberPrintedName
     consentIsRepresentativeSign = ""
@@ -327,7 +329,8 @@ def fill_csf(data):
         rep = data.get('representative', {})
         repPrintedName = rep.get('repName')
         consentName = repPrintedName
-        repSignDate = [f"{get_today().month:02}", f"{get_today().day:02}", get_today().year]
+        # repSignDate = [f"{get_today().month:02}", f"{get_today().day:02}", get_today().year]
+        repSignDate = [None, None, None]
         repRel_value = rep.get('repRelationship', '').lower()
 
         match repRel_value:

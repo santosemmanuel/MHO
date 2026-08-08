@@ -359,7 +359,7 @@ def get_patient_records(request): # Assuming this is your view function name
     if date_str:
         try:
             date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
-            records = PatientRecord.objects.filter(DateandTime=date_obj)
+            records = PatientRecord.objects.filter(date_and_time__date=date_obj)
         except ValueError:
             records = PatientRecord.objects.none()
     else:
