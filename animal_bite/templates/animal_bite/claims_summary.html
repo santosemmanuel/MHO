@@ -303,7 +303,15 @@
       .then((data) => {
         console.log(data);
 
+
         const table = document.querySelector(".report");
+        
+        const existingRows = table.querySelectorAll(".report tr");
+        existingRows.forEach((row, index) => {
+            if(index > 2) { 
+              row.remove(); 
+            }
+        });
 
         data.forEach((patient, index) => {
           const tr = document.createElement("tr");
