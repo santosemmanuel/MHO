@@ -235,25 +235,32 @@ def view_print(request):
     statement['patientInfo']['right'][2]['value'] = format_datetime(patient.get('datetimeDischarged', ''))
     statement = _normalize_statement_info(statement)
 
-    fee_summary = _load_json(settings.BASE_DIR / 'animal_bite' / 'static' / 'json' / 'fee-summary.json')
-    professional_fees = _load_json(settings.BASE_DIR / 'animal_bite' / 'static' / 'json' / 'professional-fees.json')
-    itemized_charges = _load_json(settings.BASE_DIR / 'animal_bite' / 'static' / 'json' / 'itemized-charges.json')
+    # 1. Load JSON data (itemized_charges is a dict with top-level keys)
+    raw_itemized = _load_json(settings.BASE_DIR / 'animal_bite' / 'static' / 'json' / 'itemized-charges.json')
+    raw_fee_summary = _load_json(settings.BASE_DIR / 'animal_bite' / 'static' / 'json' / 'fee-summary.json')
+    raw_prof_fees = _load_json(settings.BASE_DIR / 'animal_bite' / 'static' / 'json' / 'professional-fees.json')
 
-    patient_age = calculate_age(patient.get('dob', ''))
+    # 2. Calculate patient age cleanly
+    dob = patient.get('depDob') if patient.get('dependent') else patient.get('dob', '')
+    patient_age = calculate_age(dob)
+
+    # 3. Determine the correct key for itemized charges
     if patient_age >= 60:
-        fee_summary = fee_summary.get('Senior', fee_summary)
-        professional_fees = professional_fees.get('Senior', professional_fees)
-        itemized_charges = itemized_charges.get('Senior', itemized_charges)
+        charge_key = 'Senior'
+    elif patient_age < 1:
+        charge_key = 'Below1'
+    elif 1 <= patient_age <= 5:
+        charge_key = 'OneToFive'
     else:
-        fee_summary = fee_summary.get('Regular', fee_summary)
-        professional_fees = professional_fees.get('Regular', professional_fees)
+        charge_key = 'Regular'
 
-        if patient_age < 1:
-            itemized_charges = itemized_charges.get('Below1', itemized_charges)
-        elif 1 <= patient_age <= 5:
-            itemized_charges = itemized_charges.get('OneToFive', itemized_charges)
-        else:
-            itemized_charges = itemized_charges.get('Regular', itemized_charges)
+    # 4. Extract arrays safely without reassigning dict lookups in-place
+    itemized_charges = raw_itemized.get(charge_key, raw_itemized.get('Regular', []))
+
+    # Handle Fee Summary & Professional Fees (Senior vs Regular)
+    summary_key = 'Senior' if patient_age >= 60 else 'Regular'
+    fee_summary = raw_fee_summary.get(summary_key, raw_fee_summary)
+    professional_fees = raw_prof_fees.get(summary_key, raw_prof_fees)
 
     today_str = date.today().strftime('%b %d, %Y')
     for item_date in itemized_charges:

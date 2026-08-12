@@ -23,12 +23,21 @@
   </div>
       <div class="viewer-actions mb-4">
         <ul class="nav nav-pills" id="pdfTabNav"></ul>
+     <div class="col-md-5">
+  <div class="d-flex align-items-center gap-2">
+    <input type="date" id="serviceDate" class="form-control">
+    <button type="button" class="btn btn-submit text-nowrap" onclick="updateServiceDates()">
+      Apply Date
+    </button>
+  </div>
+</div>
         <button
           class="btn btn-back-modern"
           onclick="window.location.href = '/animal_bite'"
         >
           <i class="fa-solid fa-arrow-left me-1"></i> Back
         </button>
+      
       </div>
       <div class="viewer-card">
         <div class="card-body">
@@ -354,7 +363,7 @@
       </tr>
     </thead>
 
-    <tbody>
+    <tbody >
       {% for row in fee_summary %}
       <tr>
         <td>{{ row.label }}</td>
@@ -481,9 +490,9 @@
       </tr>
     </thead>
 
-    <tbody>
+    <tbody id="itemizedChargesBody">
       {% for row in itemized_charges %}
-      <tr>
+      <tr class="item-row">
         <td>{{ row.date }}</td>
 
         <td>{{ row.item }}</td>
@@ -611,6 +620,33 @@
            document.getElementById('printSOABtn').addEventListener('click', function() {
               window.print(); // only runs when button is clicked
           });
+    </script>
+    <script>
+      function updateServiceDates() {
+        const dateInput = document.getElementById("serviceDate");
+        const dateValue = dateInput.value;
+
+        if (!dateValue) {
+          alert("Please select a date.");
+          return;
+        }
+
+        // Parse YYYY-MM-DD without timezone issues
+        const [year, month, day] = dateValue.split("-").map(Number);
+
+        const date = new Date(year, month - 1, day);
+
+        const formattedDate = date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric"
+        });
+
+        // Update the first <td> of each item row
+        document.querySelectorAll("#itemizedChargesBody .item-row").forEach(row => {
+          row.cells[0].textContent = formattedDate;
+        });
+      }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   </body>
