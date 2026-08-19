@@ -241,8 +241,11 @@ def view_print(request):
     raw_prof_fees = _load_json(settings.BASE_DIR / 'animal_bite' / 'static' / 'json' / 'professional-fees.json')
 
     # 2. Calculate patient age cleanly
-    dob = patient.get('depDob') if patient.get('dependent') else patient.get('dob', '')
+    dob = patient['dependent']['depDob'] if patient.get('dependent') else patient.get('dob', '')
     patient_age = calculate_age(dob)
+
+    print(f"patient: {patient}")
+    print(f"dob {dob}, patient_age: {patient_age}")
 
     # 3. Determine the correct key for itemized charges
     if patient_age >= 60:
@@ -257,6 +260,7 @@ def view_print(request):
     # 4. Extract arrays safely without reassigning dict lookups in-place
     itemized_charges = raw_itemized.get(charge_key, raw_itemized.get('Regular', []))
 
+    print(f"charge_key: {charge_key}")
     # Handle Fee Summary & Professional Fees (Senior vs Regular)
     summary_key = 'Senior' if patient_age >= 60 else 'Regular'
     fee_summary = raw_fee_summary.get(summary_key, raw_fee_summary)
