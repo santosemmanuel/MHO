@@ -427,3 +427,16 @@ def patient_management(request):
     template = loader.get_template('animal_bite/patient_management.html')
     context = {}
     return HttpResponse(template.render(context, request))       
+
+def delete_member(request, id):
+    """
+    Delete a patient record by ID.
+    """
+    try:
+        patient_record = PatientRecord.objects.get(id=id)
+        patient_record.delete()
+        return JsonResponse({'status': 'success', 'message': 'Patient record deleted successfully.'})
+    except PatientRecord.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Patient record not found.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

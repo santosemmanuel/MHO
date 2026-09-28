@@ -1,5 +1,6 @@
 {% load static %}
 {% include 'animal_bite/header.html' %}
+{% csrf_token %}
 <div class="container-xl animal-bite-page my-5">
     <div class="card animal-bite-banner mb-4">
         <div class="card-body py-5 px-4">
@@ -17,113 +18,33 @@
         </div>
     </div>
     <div class="row g-4 mb-4">
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <small class="text-muted">Total Patients</small>
-                        <h2 class="fw-bold text-success mb-0" id="totalPatients">0</h2>
-                    </div>
-                    <div class="bg-success bg-opacity-10 rounded-circle p-3">
-                        <i class="fa-solid fa-users fa-xl text-success"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <small class="text-muted">Member Patients</small>
-                        <h2 class="fw-bold text-primary mb-0" id="memberPatients">0</h2>
-                    </div>
-                    <div class="bg-primary bg-opacity-10 rounded-circle p-3">
-                        <i class="fa-solid fa-user fa-xl text-primary"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <small class="text-muted">Dependent Patients</small>
-                        <h2 class="fw-bold text-warning mb-0" id="dependentPatients">0</h2>
-                    </div>
-                    <div class="bg-warning bg-opacity-10 rounded-circle p-3">
-                        <i class="fa-solid fa-child fa-xl text-warning"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <small class="text-muted">Patients with no PIN</small>
-                        <h2 class="fw-bold text-danger mb-0" id="patientNoPIN">0</h2>
-                    </div>
-                    <div class="bg-danger bg-opacity-10 rounded-circle p-3">
-                        <i class="fa-solid fa-ban fa-xl text-danger"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Filters -->
-        <div class="card shadow-sm border-0 mb-4">
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label">Year</label>
-                        <select class="form-select" id="yearFilter">
-                            <option value="">All Years</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Month</label>
-                        <select class="form-select" id="monthFilter">
-                            <option value="">All Months</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Barangay</label>
-                        <select class="form-select" id="barangayFilter">
-                            <option value="">All Barangays</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button class="btn btn-submit w-100">
-                            <i class="fa-solid fa-filter me-2"></i>
-                            Apply Filter
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Charts -->
-        <div class="row g-4 mb-4">
-            <div class="col-lg-8">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-header bg-white">
-                        <strong>Monthly Claims</strong>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="monthlyChart" height="120"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-header bg-white">
-                        <strong>Claim Status</strong>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="statusChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- Recent Claims -->
+             <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label class="form-label">Date</label>
+            <input type="date"
+                   class="form-control"
+                   id="dateFilter"
+                   value="{{ today|date:'Y-m-d' }}"
+                   name="dateFilter">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Barangay</label>
+            <select class="form-select" id="barangayFilter">
+              <option value="">All Barangays</option>
+            </select>
+          </div>
+          <div class="col-md-3 d-flex align-items-end">
+            <button class="btn btn-submit w-100" id="applyFilterBtn">
+              <i class="fa-solid fa-filter me-2"></i>
+              Apply Filter
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
         <div class="card shadow-sm border-0">
             <div class="card-header bg-white d-flex justify-content-between">
                 <strong>
@@ -143,7 +64,7 @@
                             <th style="width: 30%">Name</th>
                             <th>Membership</th>
                             <th>Barangay</th>
-                            <th>Day 0</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -151,415 +72,400 @@
                 </table>
             </div>
         </div>
-        <div id="claimsSummaryReport" style="display: none;">
-            <table style="width:100%; border:0; border-collapse:collapse;">
-                <tr>
-                    <!-- Logo -->
-                    <td style="width:90px; text-align:left; vertical-align:top;">
-                        <img src="{% static 'img/philhealth_Logo.png' %}"
-                             alt="PhilHealth Logo"
-                             style="width:110px;
-                                    height:110px">
-                    </td>
-                    <!-- Header -->
-                    <td style="text-align:center;">
-                        <div style="font-size:11px;">Republic of the Philippines</div>
-                        <div style="font-size:11px; font-weight:bold;">PHILIPPINE HEALTH INSURANCE CORPORATION</div>
-                        <div style="font-size:11px;">City State Centre, 709 Shaw Boulevard, Pasig City</div>
-                        <div style="font-size:11px;">
-                            Call Center (02) 441-7442 &nbsp;&nbsp;&nbsp;
-                            Trunkline (02) 441-7444
-                        </div>
-                        <div style="font-size:11px;">email: actioncenter@philhealth.gov.ph</div>
-                    </td>
-                    <!-- Empty cell to balance the logo -->
-                    <td style="width:90px;"></td>
-                </tr>
-                <tr>
-                    <td colspan="3" style="height:20px;"></td>
-                </tr>
-                <tr>
-                    <td colspan="3"
-                        style="text-align:center;
-                               font-size:21px;
-                               font-weight:bold">CLAIMS SUMMARY REPORT for ANIMAL BITES</td>
-                </tr>
-                <tr>
-                    <td colspan="3" style="height:20px;"></td>
-                </tr>
-                <tr>
-                    <td colspan="3" style="font-size:15px;">
-                        <strong>Facility:</strong>
-                        <u>BURAUEN MUNICIPAL HEALTH OFFICE ANIMAL BITE TREATMENT CENTER</u>
-                        <span style="float:right;">
-                            <strong>Provider Code:</strong> ________________________
-                        </span>
-                    </td>
-                </tr>
-            </table>
-            <br>
-            <table class="report">
-                <tr>
-                    <th rowspan="3" style="width:10px;"></th>
-                    <th rowspan="2" style="width:200px;">Patient Name</th>
-                    <th rowspan="3" style="width:70px;">Membership</th>
-                    <th rowspan="3" style="width:160px;">PhilHealth Identification Number (PIN) of Member</th>
-                    <th rowspan="3" style="width:100px;">Diagnosis (ICD Code)</th>
-                    <th colspan="4">Immunization Schedule (mm/dd/yyyy)</th>
-                    <th rowspan="3" style="width:110px;">
-                        Member's Signature
-                        <br>
-                        (for Authorized Signatory)
-                    </th>
-                </tr>
-                <tr>
-                    <th colspan="3">Anti-Rabies Vaccine</th>
-                    <th rowspan="2"  style="width:50px;">RIG</th>
-                </tr>
-                <tr>
-                    <th>(Last Name, First Name, M.I.)</th>
-                    <th style="width:50px;">Day 0</th>
-                    <th style="width:50px;">Day 3</th>
-                    <th style="width:50px;">Day 7</th>
-                </tr>
-            </table>
-            <br>
-            <br>
-            <table style="width:100%; border-collapse:collapse;">
-                <tr>
-                    <td style="border:none; font-size:12px;">
-                        <strong>Based on the PhilHealth Circular No. ____, 2013</strong>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="height:20px; border:none;"></td>
-                </tr>
-                <tr>
-                    <td style="border:none; font-size:12px;">
-                        I certify that services rendered were recorded in the patient's treatment
-                        records and that the herein information given are true and correct.
-                    </td>
-                </tr>
-                <tr>
-                    <td style="border:none; font-size:12px;">
-                        The foregoing items and charges are in compliance with the applicable
-                        laws, rules, and regulations.
-                    </td>
-                </tr>
-            </table>
-            <br>
-            <br>
-            <br>
-            <table style="width:100%; border-collapse:collapse;">
-                <tr>
-                    <td style="width:50%; border:none; font-size: 14px;">
-                        <strong>Prepared by:</strong>
-                    </td>
-                    <td style="width:50%; border:none; text-align:left; font-size: 14px">
-                        <strong>Approved by:</strong>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="height:60px; border:none;"></td>
-                    <td style="border:none;"></td>
-                </tr>
-                <tr>
-                    <td style="border:none; text-align:center; font-size: 15px;">
-                        <strong>KEVIN REY C. MAGSAMBOL, RN</strong>
-                    </td>
-                    <td style="border:none; text-align:center; font-size: 15px;">
-                        <strong>MA. QUEENA JOVE Q. SERRANO, MD</strong>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="border:none; text-align:center; font-size: 14px;">PRINTED NAME &amp; SIGNATURE (Authorized Signatory)</td>
-                    <td style="border:none; text-align:center; font-size: 14px;">HEAD OF FACILITY</td>
-                </tr>
-            </table>
-        </div>
     </div>
+
+    <!-- Edit modal -->
+        <!-- Edit Record Modal -->
+        <div class="modal fade" id="editRecordModal" tabindex="-1" aria-labelledby="editRecordModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editRecordModalLabel">
+                            <i class="fa-solid fa-pen-to-square me-2"></i>
+                            Edit Member Information
+                        </h5>
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                        </button>
+                    </div>
+
+                    <form id="editRecordForm">
+
+                        <div class="modal-body">
+
+                            <!-- Hidden ID -->
+                            <input type="hidden" id="edit_id">
+
+                            <div class="row g-3">
+
+                                <!-- PIN -->
+                                <div class="col-md-6">
+                                    <label for="edit_pin" class="form-label">
+                                        PIN
+                                    </label>
+
+                                    <input type="text"
+                                        class="form-control"
+                                        id="edit_pin"
+                                        name="pin"
+                                        readonly>
+                                </div>
+
+                                <!-- Membership -->
+                                <div class="col-md-6">
+                                    <label for="edit_membership" class="form-label">
+                                        Membership
+                                    </label>
+
+                                    <select class="form-select"
+                                            id="edit_membership"
+                                            name="membership">
+
+                                        <option value="MEMBER">MEMBER</option>
+                                        <option value="DEPENDENT">DEPENDENT</option>
+
+                                    </select>
+                                </div>
+
+                                <!-- Last Name -->
+                                <div class="col-md-6">
+                                    <label for="edit_last_name" class="form-label">
+                                        Last Name
+                                    </label>
+
+                                    <input type="text"
+                                        class="form-control"
+                                        id="edit_last_name"
+                                        name="last_name"
+                                        required>
+                                </div>
+
+                                <!-- First Name -->
+                                <div class="col-md-6">
+                                    <label for="edit_first_name" class="form-label">
+                                        First Name
+                                    </label>
+
+                                    <input type="text"
+                                        class="form-control"
+                                        id="edit_first_name"
+                                        name="first_name"
+                                        required>
+                                </div>
+
+                                <!-- Middle Name -->
+                                <div class="col-md-6">
+                                    <label for="edit_middle_name" class="form-label">
+                                        Middle Name
+                                    </label>
+
+                                    <input type="text"
+                                        class="form-control"
+                                        id="edit_middle_name"
+                                        name="middle_name">
+                                </div>
+
+                                <!-- Name Extension -->
+                                <div class="col-md-6">
+                                    <label for="edit_name_ext" class="form-label">
+                                        Name Extension
+                                    </label>
+
+                                    <input type="text"
+                                        class="form-control"
+                                        id="edit_name_ext"
+                                        name="name_ext"
+                                        placeholder="Jr., Sr., III, etc.">
+                                </div>
+
+                                <!-- Barangay -->
+                                <div class="col-md-6">
+                                    <label for="edit_barangay" class="form-label">
+                                        Barangay
+                                    </label>
+
+                                    <input type="text"
+                                        class="form-control"
+                                        id="edit_barangay"
+                                        name="barangay"
+                                        required>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+
+                            <button type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                <i class="fa-solid fa-xmark me-1"></i>
+                                Cancel
+                            </button>
+
+                            <button type="submit"
+                                    class="btn btn-submit">
+                                <i class="fa-solid fa-floppy-disk me-1"></i>
+                                Save Changes
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    <!--- End Edit Modal -->
     <script>
-     let leyteBrgy = {};
-      fetch("{% static 'data/barangays.json' %}")
-        .then((response) => response.json())
-        .then((data) => {
-            leyteBrgy = data;
-            const barangaySelect = document.getElementById("barangayFilter");
-            barangaySelect.innerHTML =
-              '<option value="">-- Select Barangay --</option>';
-            const filterBrgy = leyteBrgy.filter(
-              (item) => item.citymun === "Burauen",
-            );
+     const today = new Date();
 
-            filterBrgy.forEach((brgy) => {
-              const option = document.createElement("option");
-              option.value = brgy.name;
-              option.text = brgy.name;
-              barangaySelect.appendChild(option);
-          })})
-        .catch((error) => console.error("Error loading JSON:", error));
-      
-        document.addEventListener('DOMContentLoaded', () => {
-            const yearSelect = document.getElementById('yearFilter');
-            const monthSelect = document.getElementById('monthFilter');
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
 
-            // --- 1. POPULATE YEARS ---
-            const currentYear = new Date().getFullYear();
-            const earliestYear = 1900; // Set your desired past year limit here
+    //const todayString = `${year}-${month}-${day}`;
+    const todayString = ``;
 
-            for (let year = currentYear; year >= earliestYear; year--) {
-              const option = document.createElement('option');
-              option.value = year;
-              option.textContent = year;
-              yearSelect.appendChild(option);
-            }
+    fetch(`{% url 'animal_bite:patient_records' %}?date=${encodeURIComponent(todayString)}`)
+      .then((response) => response.json())
+      .then((data) => {
 
-            // --- 2. POPULATE MONTHS ---
-            const months = [
-              'January', 'February', 'March', 'April', 
-              'May', 'June', 'July', 'August', 
-              'September', 'October', 'November', 'December'
-            ];
-
-            months.forEach((month, index) => {
-              const option = document.createElement('option');
-              // Store 1-based month numbers (1 = Jan, 12 = Dec)
-              option.value = index + 1; 
-              option.textContent = month;
-              monthSelect.appendChild(option);
-            });
-        });
-         
-
-fetch("{% url 'animal_bite:patient_records' %}")
-  .then((response) => response.json())
-  .then((data) => {
-    const totalPatients = data.length;
-    const memberPatients = data.filter((patient) => patient.membership === "Member").length;
-    const dependentPatients = data.filter((patient) => patient.membership === "Dependent").length;
-    const patientNoPIN = data.filter((patient) => !patient.pin || patient.pin === "000000000000" || patient.pin === "").length;
-
-    document.getElementById("totalPatients").textContent = totalPatients;
-    document.getElementById("memberPatients").textContent = memberPatients;
-    document.getElementById("dependentPatients").textContent = dependentPatients;
-    document.getElementById("patientNoPIN").textContent = patientNoPIN;
-  })
-  .catch((error) => console.error("Error loading JSON:", error));
-    </script>
-    <script>
- fetch("{% url 'animal_bite:patient_records' %}")
-  .then((response) => response.json())
-  .then((data) => {
-    console.log(data);
-
-    const table = document.querySelector(".report");
-
-    data.forEach((patient, index) => {
-      const tr = document.createElement("tr");
-
-      // Format date if available
-      const day0 = patient.day_0
-        ? new Date(patient.day_0).toLocaleDateString("en-US")
-        : "";
-
-      tr.innerHTML = `
-        <td>${index + 1}</td>
-        <td>
-          ${patient.last_name}, ${patient.first_name},
-          ${patient.middle_name ? patient.middle_name.charAt(0) + "." : ""}
-          ${patient.name_ext || ""}
-        </td>
-        <td style='text-align:center'>${patient.membership === "Member" ? "M" : "D"}</td>
-        <td>${patient.pin || ""}</td>
-        <td style='text-align:center'>T14.1; W55</td>
-        <td>${day0}</td>
-        <td>\t\t\t\t</td>
-        <td>\t\t\t\t</td>
-        <td></td>
-        <td></td>
-      `;
-
-      table.appendChild(tr);
-    });
-
-    const tbody = document.querySelector('#example tbody');
-    tbody.innerHTML = '';
+        const tbody = document.querySelector('#example tbody');
+        tbody.innerHTML = '';
 
         data.forEach(item => {
             const row = `
                 <tr>
                     <td>${item.pin}</td>
+
                     <td>
-                      ${item.last_name}, ${item.first_name},
-                      ${item.middle_name ? item.middle_name : ""}
-                      ${item.name_ext || ""}
+                        ${item.last_name}, 
+                        ${item.first_name} 
+                        ${item.middle_name || ""} 
+                        ${item.name_ext || ""}
                     </td>
+
                     <td>${item.membership}</td>
+
                     <td>${item.barangay}</td>
-                    <td>${item.day_0}</td>
+
+                    <td>
+                        <div class="dropdown">
+
+                            <button 
+                                class="btn btn-submit w-100 dropdown-toggle" 
+                                type="button" 
+                                data-bs-toggle="dropdown" 
+                                aria-expanded="false">
+
+                                <i class="fa-solid fa-ellipsis me-2"></i>
+                                Actions
+
+                            </button>
+
+                            <ul class="dropdown-menu">
+
+                                <li>
+                                    <a class="dropdown-item generate-pdf-btn"
+                                    href="#"
+                                    data-pin="${item.pin}">
+
+                                        <i class="fa-solid fa-file-pdf me-2"></i>
+                                        Generate PDF
+
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item edit-btn"
+                                    href="#"
+                                    data-id="${item.id}">
+
+                                        <i class="fa-solid fa-edit me-2"></i>
+                                        Edit
+
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item delete-btn"
+                                    href="#"
+                                    data-id="${item.id}">
+                                        <i class="fa-solid fa-trash me-2"></i>
+                                        Delete
+                                    </a>
+                                </li>
+
+                            </ul>
+
+                        </div>
+                    </td>
                 </tr>
             `;
 
-            tbody.insertAdjacentHTML('beforeend', row);
+            tbody.insertAdjacentHTML("beforeend", row);
         });
 
-      new DataTable('#example');
-  })
-  .catch((error) => console.error("Error loading JSON:", error));
+        new DataTable('#example');
 
-      
+        // Edit Function 
+    document.addEventListener("click", function (e) {
+
+        const editButton = e.target.closest(".edit-btn");
+
+        if (!editButton) return;
+
+        e.preventDefault();
+
+        const id = editButton.dataset.id;
+
+        editRecord(id);
+    });
+
+    function editRecord(id) {
+
+        console.log("Editing record ID:", id);
+
+        // Find the record from your existing data array
+        const item = data.find(record => record.id == id);
+
+        if (!item) {
+            Swal.fire({
+                icon: "error",
+                title: "Record Not Found",
+                text: "The selected record could not be found."
+            });
+
+            return;
+        }
+
+        // Populate modal fields
+        document.getElementById("edit_id").value = item.id || "";
+        document.getElementById("edit_pin").value = item.pin || "";
+
+        document.getElementById("edit_last_name").value =
+            item.last_name || "";
+
+        document.getElementById("edit_first_name").value =
+            item.first_name || "";
+
+        document.getElementById("edit_middle_name").value =
+            item.middle_name || "";
+
+        document.getElementById("edit_name_ext").value =
+            item.name_ext || "";
+
+        document.getElementById("edit_membership").value =
+            item.membership || "";
+
+        document.getElementById("edit_barangay").value =
+            item.barangay || "";
+
+        // Open Bootstrap modal
+        const modalElement = document.getElementById("editRecordModal");
+
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+
+        modal.show();
+    }
+
+    }); 
+
+    document.addEventListener("click", function (e) {
+
+        const deleteButton = e.target.closest(".delete-btn");
+
+        if (!deleteButton) return;
+
+        e.preventDefault();
+
+        const id = deleteButton.dataset.id;
+
+        deleteRecord(id);
+    });
+
+
+    function getCSRFToken() {
+
+        const cookieValue = document.cookie
+            .split("; ")
+            .find(row => row.startsWith("csrftoken="));
+
+        return cookieValue
+            ? decodeURIComponent(cookieValue.split("=")[1])
+            : "";
+    }
+
+    async function deleteRecord(id) {
+
+        const result = await Swal.fire({
+            title: "Delete Record?",
+            text: "This record will be permanently deleted.",
+            icon: "warning",
+
+            showCancelButton: true,
+
+            confirmButtonText: "Yes, Delete",
+            cancelButtonText: "Cancel",
+
+            confirmButtonColor: "#dc3545",
+            cancelButtonColor: "#6c757d"
+        });
+
+        // User clicked Cancel
+        if (!result.isConfirmed) {
+            return;
+        }
+
+        try {
+            const deleteUrl = "{% url 'animal_bite:delete_member' 0 %}"
+            .replace("/0/", "/" + id + "/");
+
+            const response = await fetch(deleteUrl, {
+                method: "POST",
+
+                headers: {
+                    "X-CSRFToken": getCSRFToken(),
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Failed to delete record."
+                );
+            }
+
+            await Swal.fire({
+                icon: "success",
+                title: "Deleted!",  
+                text: "The record has been deleted successfully.",
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            // Reload table
+            window.location.reload();
+
+        } catch (error) {
+
+            console.error("Delete error:", error);
+
+            Swal.fire({
+                icon: "error",
+                title: "Delete Failed",
+                text: error.message
+            });
+        }
+    }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-document.getElementById("printSummaryBtn").addEventListener("click", function () {
-
-    const reportHTML = document.getElementById("claimsSummaryReport").innerHTML;
-
-    const printWindow = window.open("", "_blank");
-
-    printWindow.document.write(`
-        <html>
-        <head>
-            <title>Claims Summary Report</title>
-
-            <style>
-                body{
-                    font-family: Arial, sans-serif;
-                    margin:20px;
-                }
-
-                table{
-                    width:100%;
-                    border-collapse:collapse;
-                }
-
-                .report th, .report td{
-                    border:1px solid #000;
-                    padding:4px;
-                    font-size:12px;
-                }
-
-                @page{
-                    size:A4 landscape;
-                    margin:10mm;
-                }
-</style>
-        </head>
-        <body>
-            ${reportHTML}
-        </body>
-        </html>
-    `);
-
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
-    // printWindow.close();
-
-});
-    </script>
-    <script>
-let monthlyChart;
-let statusChart;
-
-fetch("{% url 'animal_bite:patient_records' %}")
-.then(response => response.json())
-.then(data => {
-
-    console.log(data);
-
-    // Dashboard cards
-    document.getElementById("totalPatients").innerHTML = data.length;
-
-    //   Monthly Chart
-    monthlyChart = new Chart(document.getElementById('monthlyChart'),{
-
-        type:'bar',
-
-        data:{
-
-            labels:[
-                'Jan','Feb','Mar','Apr','May','Jun',
-                'Jul','Aug','Sep','Oct','Nov','Dec'
-            ],
-
-            datasets:[{
-
-                label:'Claims',
-
-                data:[
-                    12,19,8,15,20,16,
-                    25,0,0,0,0,0
-                ],
-
-                backgroundColor:'#198754',
-                borderRadius:8
-
-            }]
-        },
-
-        options:{
-            responsive:true,
-            plugins:{
-                legend:{
-                    display:false
-                }
-            }
-        }
-
-    });
-
-    // Doughnut Chart
-    statusChart = new Chart(document.getElementById('statusChart'),{
-
-        type:'doughnut',
-
-        data:{
-
-            labels:[
-                'Approved',
-                'Pending',
-                'Denied'
-            ],
-
-            datasets:[{
-
-                data:[
-                    50,
-                    20,
-                    10
-                ],
-
-                backgroundColor:[
-                    '#198754',
-                    '#ffc107',
-                    '#dc3545'
-                ]
-
-            }]
-
-        },
-
-        options:{
-
-            responsive:true,
-
-            plugins:{
-
-                legend:{
-                    position:'bottom'
-                }
-
-            }
-
-        }
-
-    });
-
-})
-.catch(error=>console.log(error));
-
-
-
-    </script>
     {% include 'animal_bite/footer.html' %}

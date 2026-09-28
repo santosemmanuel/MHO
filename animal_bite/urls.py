@@ -12,4 +12,5 @@ urlpatterns = [
     path('claims_summary/', views.claims_summary, name='claims_summary'),
     path('patient_records/', views.get_patient_records, name='patient_records'),
     path('patient_management/', views.patient_management, name='patient_management'),
+    path("delete-member/<int:id>/", views.delete_member, name="delete_member"),
 ]
