@@ -170,10 +170,12 @@ def fill_cf2(data):
         ICD10Code = "T14.1\nW55"
         RelatedProcedures = "ANIMAL BITE\nTREATMENT"
         RVSCode = "P90375"
-        Doctor = "MA. QUEENA JOVE Q. SERRANO MD"
+        # Doctor = "MA. QUEENA JOVE Q. SERRANO MD"
+        Doctor = "RHEA MAY D. CALABIA, MD"
         Designation = "PHYSICIAN"
         GrandTotal = "P 5,850.00"
-        AccreditationNo = ["1100", "1945935", "3"]
+        # AccreditationNo = ["1100", "1945935", "3"]
+        AccreditationNo = ["1100", "2575347", "3"]
 
         today = get_today()
         date_admitted = [f"{today.month:02}", f"{today.day:02}", today.year]
@@ -277,7 +279,8 @@ def fill_csf(data):
     form_fields_csf = list(fillpdfs.get_form_fields(pdf_path).keys())
     patients_pin = split_pin(data['pin'])
     birthDate = data['dob'].split('-')
-    doctor = "MA. QUEENA JOVE Q. SERRANO MD"
+    # doctor = "MA. QUEENA JOVE Q. SERRANO MD"
+    doctor = "RHEA MAY D. CALABIA, MD"
     memberMale = "Yes_xqqa" if data['sex'].lower() == "male" else None
     memberFemale = "Yes_xqqa" if data['sex'].lower() == "female" else None
     dep_pin = ["", "", ""]
@@ -287,6 +290,7 @@ def fill_csf(data):
     depFname = data["firstName"].upper()
     depExt = data["nameExt"].upper()
     depMname = data["middleName"].upper()
+    AccreditationNo = ["1100", "2575347", "3"]
 
     if data["dependent"]:
         dep_pin = split_pin(data["dependent"]["depPin"])
@@ -408,9 +412,9 @@ def fill_csf(data):
         form_fields_csf[form_fields_csf.index("SignatureMemberRep")]: consentName,
         form_fields_csf[form_fields_csf.index("ifPatient")]: consentIsMemberSign,
         form_fields_csf[form_fields_csf.index("ifRepresentative")]: consentIsRepresentativeSign,
-        form_fields_csf[form_fields_csf.index("accreditationNo0")]: "1100",
-        form_fields_csf[form_fields_csf.index("accreditationNo1")]: "1945935",
-        form_fields_csf[form_fields_csf.index("accreditationNo2")]: "3",
+        form_fields_csf[form_fields_csf.index("accreditationNo0")]: AccreditationNo[0],
+        form_fields_csf[form_fields_csf.index("accreditationNo1")]: AccreditationNo[1],
+        form_fields_csf[form_fields_csf.index("accreditationNo2")]: AccreditationNo[2],
         form_fields_csf[form_fields_csf.index("healthCareSignature")]: doctor,
         form_fields_csf[form_fields_csf.index("healthCareSignedMonth")]: f"{get_today().month:02}",
         form_fields_csf[form_fields_csf.index("healthCareSignedDay")]: "",
