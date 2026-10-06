@@ -1,0 +1,26 @@
+{% load static %}
+{% include 'animal_bite/header.html' %}
+{% csrf_token %}
+<div class="container-xl animal-bite-page my-5">
+    <div class="card animal-bite-banner mb-4">
+        <div class="card-body py-5 px-4">
+            <div class="d-flex align-items-center justify-content-between gap-4 flex-column flex-md-row">
+                <div>
+                    <h3 class="mb-2 fw-bold banner-title">
+                        <i class="fa-solid fa-file-chart-line me-2"></i>Patient Management Section
+                    </h3>
+                    <div class="subtitle banner-subtitle">Animal Bite Management System - Patient Overview</div>
+                </div>
+                <div class="banner-icon shadow-sm">
+                    <i class="fa-solid fa-chart-bar fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-4 mb-4">
+
+    </div>
+
+   
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% include 'animal_bite/footer.html' %}

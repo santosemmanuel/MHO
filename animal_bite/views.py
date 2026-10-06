@@ -440,3 +440,12 @@ def delete_member(request, id):
         return JsonResponse({'status': 'error', 'message': 'Patient record not found.'}, status=404)
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+def settingsPage(request):
+    """
+    Render the settings page.
+    """
+    template = loader.get_template('animal_bite/settings.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
