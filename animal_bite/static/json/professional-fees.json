@@ -1,8 +1,9 @@
+
 {
   "Regular": [
     {
-      "accreditation": "1100-1945935-3",
-      "physician": "MA. QUEENA JOVE QUIMSING SERRANO",
+      "accreditation": "1100-2575347-3",
+      "physician": "RHEA MAY D. CALABIA, MD",
       "amount": 500,
       "discount": 0,
       "philhealth": 0.0,
@@ -12,8 +13,8 @@
   ],
   "Senior": [
     {
-      "accreditation": "1100-1945935-3",
-      "physician": "MA. QUEENA JOVE QUIMSING SERRANO",
+      "accreditation": "1100-2575347-3",
+      "physician": "RHEA MAY D. CALABIA, MD",
       "amount": 625,
       "discount": 125,
       "philhealth": 0.0,
@@ -22,3 +23,5 @@
     }
   ]
 }
+
+
