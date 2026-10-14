@@ -24,6 +24,7 @@ urlpatterns = [
     path('animal_bite/', include('animal_bite.urls')),
     path('dental/', include('dental.urls')),
     path('family_planning/', include('family_planning.urls')),
+    path('tb_dots/', include('tb_dots.urls')),
 ]
 
 # Serve static files in development
