@@ -7,20 +7,56 @@
             <div class="d-flex align-items-center justify-content-between gap-4 flex-column flex-md-row">
                 <div>
                     <h3 class="mb-2 fw-bold banner-title">
-                        <i class="fa-solid fa-file-chart-line me-2"></i>Patient Management Section
+                        <i class="fa-solid fa-file-chart-line me-2"></i>Settings
                     </h3>
-                    <div class="subtitle banner-subtitle">Animal Bite Management System - Patient Overview</div>
+                    <div class="subtitle banner-subtitle">Animal Bite Management System - Settings</div>
                 </div>
                 <div class="banner-icon shadow-sm">
-                    <i class="fa-solid fa-chart-bar fa-2x"></i>
+                    <i class="fa-solid fa-cog fa-2x"></i>
                 </div>
             </div>
         </div>
     </div>
     <div class="row g-4 mb-4">
-
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <form action="{% url 'animal_bite:saveSettings' %}" method="post" id="settingsForm" class="needs-validation">
+                    {% csrf_token %}
+                    <!-- Add your form fields here -->
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="physician_accreditation_number" class="form-label">Physician Accreditation Number</label>
+                            <input type="text" class="form-control" id="physician_accreditation_number" name="physician_accreditation_number" placeholder="Enter accreditation number">
+                        </div>
+                        <div class="col mb-3">
+                            <label for="physician_name" class="form-label">Physician Name</label>
+                            <input type="text" class="form-control" id="physician_name" name="physician_name" placeholder="Enter physician name">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">Save Settings</button>
+                </form>
+            </div>
+        </div>
     </div>
 
    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        (function () {
+        "use strict";
+        const form = document.getElementById("settingsForm");
+
+        form.addEventListener(
+          "submit",
+          function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault();
+              event.stopPropagation();
+              form.classList.add("was-validated");
+              return;
+            }
+          },
+          false,
+        );
+      })();
+    </script>
     {% include 'animal_bite/footer.html' %}

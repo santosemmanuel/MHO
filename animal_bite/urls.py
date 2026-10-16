@@ -14,4 +14,5 @@ urlpatterns = [
     path('patient_management/', views.patient_management, name='patient_management'),
     path("delete-member/<int:id>/", views.delete_member, name="delete_member"),
     path("settings/", views.settingsPage, name="settingsPage"),
+    path("saveSettings/", views.saveSettings, name="saveSettings"),
 ]

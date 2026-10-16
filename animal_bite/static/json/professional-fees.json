@@ -1,27 +1,24 @@
-
 {
-  "Regular": [
-    {
-      "accreditation": "1100-2575347-3",
-      "physician": "RHEA MAY D. CALABIA, MD",
-      "amount": 500,
-      "discount": 0,
-      "philhealth": 0.0,
-      "otherFunding": "-",
-      "balance": 500
-    }
-  ],
-  "Senior": [
-    {
-      "accreditation": "1100-2575347-3",
-      "physician": "RHEA MAY D. CALABIA, MD",
-      "amount": 625,
-      "discount": 125,
-      "philhealth": 0.0,
-      "otherFunding": "-",
-      "balance": 500
-    }
-  ]
+    "Regular": [
+        {
+            "accreditation": "1100-2575347-4",
+            "physician": "Emmanuel B. ",
+            "amount": 500,
+            "discount": 0,
+            "philhealth": 0.0,
+            "otherFunding": "-",
+            "balance": 500
+        }
+    ],
+    "Senior": [
+        {
+            "accreditation": "1100-2575347-4",
+            "physician": "Emmanuel B. ",
+            "amount": 625,
+            "discount": 125,
+            "philhealth": 0.0,
+            "otherFunding": "-",
+            "balance": 500
+        }
+    ]
 }
-
-

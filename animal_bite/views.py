@@ -12,10 +12,17 @@ from django.conf import settings
 import datetime
 from datetime import date
 from django.utils.timezone import localdate
+from dotenv import set_key
 
 today = localdate()
 start_of_today = datetime.datetime.combine(today, datetime.time.min)
 end_of_today = datetime.datetime.combine(today, datetime.time.max)
+
+APP_ENV_PATH = (
+    Path(settings.BASE_DIR)
+    / 'animal_bite'
+    / '.env'
+)
 
 # Create your views here.
 
@@ -361,7 +368,6 @@ def download_pdf(request, filename):
     except Exception as e:
         return HttpResponse(f'Error downloading file: {str(e)}', status=500)
 
-
 def get_patient_records(request): # Assuming this is your view function name
     """
     Retrieve all patient records from the database and return them as a JsonResponse.
@@ -449,3 +455,61 @@ def settingsPage(request):
     template = loader.get_template('animal_bite/settings.html')
     context = {}
     return HttpResponse(template.render(context, request))
+
+def saveSettings(request):
+    """
+    Save settings submitted from the settings page.
+    """
+    if request.method == 'POST':
+        # Extract settings data from the request
+        settings_data = {
+            'physician_accreditation_number': request.POST.get('physician_accreditation_number'),
+            'physician_name': request.POST.get('physician_name'),
+            # Add more settings as needed
+        }
+
+        if not settings_data['physician_accreditation_number'] or not settings_data['physician_name']:
+            messages.error(request, 'Please fill in all required fields.')
+            return redirect('/animal_bite/settings/')
+
+        # Save the settings to a JSON file or database
+        settings_file_path = (
+            Path(settings.BASE_DIR)
+            / 'animal_bite'
+            / 'static'
+            / 'json'
+            / 'professional-fees.json'
+        )
+
+        set_key(
+            str(APP_ENV_PATH),
+            'PHYSICIAN_ACCREDITATION_NUMBER',
+            settings_data['physician_accreditation_number']
+        )
+
+        set_key(
+            str(APP_ENV_PATH),
+            'PHYSICIAN_NAME',
+            settings_data['physician_name']
+        )
+        # Read existing JSON data
+        with open(settings_file_path, 'r', encoding='utf-8') as f:
+            professional_fees = json.load(f)
+
+        # Update Regular and Senior
+        for category in ['Regular', 'Senior']:
+            for fee in professional_fees.get(category, []):
+                fee['accreditation'] = settings_data['physician_accreditation_number']
+                fee['physician'] = settings_data['physician_name']
+
+        # Save updated JSON data
+        with open(settings_file_path, 'w', encoding='utf-8') as f:
+            json.dump(professional_fees, f, ensure_ascii=False, indent=4)
+
+        # print(settings_data)  # For debugging purposes, you can remove this in production
+
+        messages.success(request, 'Settings saved successfully.')
+        return redirect('/animal_bite/settings/')
+    else:
+        messages.error(request, 'Invalid request method.')
+        return redirect('/animal_bite/settings/')

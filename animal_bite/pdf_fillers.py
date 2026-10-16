@@ -1,12 +1,17 @@
 import os
 from datetime import datetime
 from pathlib import Path
+from dotenv import dotenv_values
 from fillpdf import fillpdfs
 from django.conf import settings
 from .pdf_utils import get_next_date, get_today, split_pin, spacing
 
 # Get the app directory path for template PDFs
 APP_DIR = Path(__file__).resolve().parent
+
+app_env = dotenv_values(
+    Path(settings.BASE_DIR) / 'animal_bite' / '.env'
+)
 
 
 def fill_cf1(data):
@@ -171,11 +176,12 @@ def fill_cf2(data):
         RelatedProcedures = "ANIMAL BITE\nTREATMENT"
         RVSCode = "P90375"
         # Doctor = "MA. QUEENA JOVE Q. SERRANO MD"
-        Doctor = "RHEA MAY D. CALABIA, MD"
+        Doctor = app_env.get('PHYSICIAN_NAME')
         Designation = "PHYSICIAN"
         GrandTotal = "P 5,850.00"
         # AccreditationNo = ["1100", "1945935", "3"]
-        AccreditationNo = ["1100", "2575347", "3"]
+        env_accreditation_no = app_env.get('PHYSICIAN_ACCREDITATION_NUMBER', '').split('-')
+        AccreditationNo = env_accreditation_no
 
         today = get_today()
         date_admitted = [f"{today.month:02}", f"{today.day:02}", today.year]
@@ -280,7 +286,7 @@ def fill_csf(data):
     patients_pin = split_pin(data['pin'])
     birthDate = data['dob'].split('-')
     # doctor = "MA. QUEENA JOVE Q. SERRANO MD"
-    doctor = "RHEA MAY D. CALABIA, MD"
+    doctor = app_env.get('PHYSICIAN_NAME')
     memberMale = "Yes_xqqa" if data['sex'].lower() == "male" else None
     memberFemale = "Yes_xqqa" if data['sex'].lower() == "female" else None
     dep_pin = ["", "", ""]
@@ -289,8 +295,9 @@ def fill_csf(data):
     depLname = data["lastName"].upper()
     depFname = data["firstName"].upper()
     depExt = data["nameExt"].upper()
-    depMname = data["middleName"].upper()
-    AccreditationNo = ["1100", "2575347", "3"]
+    depMname = data["middleName"].upper() 
+    env_accreditation_no = app_env.get('PHYSICIAN_ACCREDITATION_NUMBER', '').split('-')
+    AccreditationNo = env_accreditation_no
 
     if data["dependent"]:
         dep_pin = split_pin(data["dependent"]["depPin"])
